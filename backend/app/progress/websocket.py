@@ -741,6 +741,75 @@ class WebSocketManager:
             if self.get_connection_info(cid)
         ]
 
+    def _get_timestamp(self) -> float:
+        """Get current timestamp.
+
+        Returns:
+            Current timestamp as float
+        """
+        return time.time()
+
+    async def subscribe(
+        self,
+        connection_id: str,
+        task_id: Optional[str] = None,
+        user_id: Optional[str] = None,
+    ):
+        """Subscribe a connection to task or user updates.
+
+        Args:
+            connection_id: Connection ID
+            task_id: Task ID to subscribe to (optional)
+            user_id: User ID to subscribe to (optional)
+        """
+        connection = self.connection_pool.connections.get(connection_id)
+        if not connection:
+            return
+
+        if task_id:
+            self.connection_pool.task_connections[task_id].add(connection_id)
+            logger.info(f"Connection {connection_id} subscribed to task {task_id}")
+
+        if user_id:
+            self.connection_pool.user_connections[user_id].add(connection_id)
+            logger.info(f"Connection {connection_id} subscribed to user {user_id}")
+
+    async def unsubscribe(
+        self,
+        connection_id: str,
+        task_id: Optional[str] = None,
+        user_id: Optional[str] = None,
+    ):
+        """Unsubscribe a connection from task or user updates.
+
+        Args:
+            connection_id: Connection ID
+            task_id: Task ID to unsubscribe from (optional)
+            user_id: User ID to unsubscribe from (optional)
+        """
+        connection = self.connection_pool.connections.get(connection_id)
+        if not connection:
+            return
+
+        if task_id:
+            self.connection_pool.task_connections[task_id].discard(connection_id)
+            logger.info(f"Connection {connection_id} unsubscribed from task {task_id}")
+
+        if user_id:
+            self.connection_pool.user_connections[user_id].discard(connection_id)
+            logger.info(f"Connection {connection_id} unsubscribed from user {user_id}")
+
+    async def subscribe_to_tasks(self, connection_id: str, task_ids: List[str]):
+        """Subscribe a connection to multiple tasks.
+
+        Args:
+            connection_id: Connection ID
+            task_ids: List of task IDs
+        """
+        for task_id in task_ids:
+            await self.subscribe(connection_id, task_id=task_id)
+        logger.info(f"Connection {connection_id} subscribed to {len(task_ids)} tasks")
+
 
 # Global WebSocket manager instance
 websocket_manager = WebSocketManager()
