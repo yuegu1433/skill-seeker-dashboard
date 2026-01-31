@@ -7,11 +7,13 @@ and visual representations of progress tracking data.
 import asyncio
 import logging
 import time
-from typing import Any, Dict, List, Optional, Union
+import json
+from typing import Any, Dict, List, Optional, Union, Callable
 from datetime import datetime, timedelta
 from collections import defaultdict
 from enum import Enum
 from uuid import UUID, uuid4
+from dataclasses import dataclass, field
 
 from sqlalchemy.orm import Session
 from sqlalchemy import and_, or_, desc, func, text
@@ -33,6 +35,8 @@ from .utils.formatters import (
 from .progress_manager import progress_manager
 from .log_manager import log_manager
 from .notification_manager import notification_manager
+from .event_bus import event_bus
+from .websocket import websocket_manager
 
 logger = logging.getLogger(__name__)
 
@@ -57,6 +61,46 @@ class MetricAggregation(Enum):
     MAX = "max"
     COUNT = "count"
     MEDIAN = "median"
+
+
+class ChartTemplate:
+    """Predefined chart template."""
+
+    def __init__(
+        self,
+        template_id: str,
+        name: str,
+        chart_type: ChartType,
+        config: Dict[str, Any],
+        description: str = "",
+    ):
+        """Initialize chart template.
+
+        Args:
+            template_id: Template ID
+            name: Template name
+            chart_type: Type of chart
+            config: Chart configuration
+            description: Template description
+        """
+        self.template_id = template_id
+        self.name = name
+        self.chart_type = chart_type
+        self.config = config
+        self.description = description
+        self.created_at = datetime.utcnow()
+
+
+@dataclass
+class RealTimeUpdate:
+    """Real-time update configuration."""
+
+    connection_id: str
+    visualization_id: str
+    update_interval: float
+    last_update: float
+    filters: Dict[str, Any]
+    callback: Optional[Callable] = None
 
 
 class VisualizationData:
@@ -127,12 +171,19 @@ class VisualizationManager:
         """
         self.db_session = db_session
         self.dashboard_widgets: Dict[str, DashboardWidget] = {}
+        self.chart_templates: Dict[str, ChartTemplate] = {}
+        self.real_time_updates: Dict[str, RealTimeUpdate] = {}
         self._stats = {
             "total_visualizations_created": 0,
             "total_dashboards_created": 0,
             "total_data_points_rendered": 0,
+            "total_templates_created": 0,
+            "total_real_time_subscriptions": 0,
             "by_chart_type": defaultdict(int),
         }
+
+        # Load default templates
+        self._load_default_templates()
 
     async def create_progress_chart(
         self,
@@ -688,6 +739,375 @@ class VisualizationManager:
 
         return data
 
+    def _load_default_templates(self):
+        """Load default chart templates."""
+        # Progress timeline template
+        self.chart_templates["progress_timeline"] = ChartTemplate(
+            template_id="progress_timeline",
+            name="Progress Timeline",
+            chart_type=ChartType.LINE,
+            config={
+                "x_axis": "time",
+                "y_axis": "progress",
+                "color": "#3b82f6",
+                "show_grid": True,
+                "animate": True,
+                "duration": 1000,
+            },
+            description="Shows task progress over time"
+        )
+
+        # Status distribution template
+        self.chart_templates["status_distribution"] = ChartTemplate(
+            template_id="status_distribution",
+            name="Status Distribution",
+            chart_type=ChartType.PIE,
+            config={
+                "show_legend": True,
+                "donut": False,
+                "colors": ["#10b981", "#f59e0b", "#ef4444", "#6b7280"],
+                "animate": True,
+                "duration": 800,
+            },
+            description="Shows distribution of task statuses"
+        )
+
+        # Performance metrics template
+        self.chart_templates["performance_metrics"] = ChartTemplate(
+            template_id="performance_metrics",
+            name="Performance Metrics",
+            chart_type=ChartType.GAUGE,
+            config={
+                "min": 0,
+                "max": 100,
+                "unit": "%",
+                "color_ranges": [
+                    {"min": 0, "max": 50, "color": "#ef4444"},
+                    {"min": 50, "max": 80, "color": "#f59e0b"},
+                    {"min": 80, "max": 100, "color": "#10b981"},
+                ],
+            },
+            description="Shows key performance metrics as gauges"
+        )
+
+        # Activity heatmap template
+        self.chart_templates["activity_heatmap"] = ChartTemplate(
+            template_id="activity_heatmap",
+            name="Activity Heatmap",
+            chart_type=ChartType.HEATMAP,
+            config={
+                "color_scale": "viridis",
+                "show_tooltip": True,
+                "cell_size": 15,
+            },
+            description="Shows activity patterns over time"
+        )
+
+        self._stats["total_templates_created"] = len(self.chart_templates)
+
+    async def create_custom_chart(
+        self,
+        template_id: str,
+        data: List[Dict[str, Any]],
+        title: str,
+        custom_config: Optional[Dict[str, Any]] = None,
+    ) -> VisualizationData:
+        """Create a custom chart using a template.
+
+        Args:
+            template_id: Template ID to use
+            data: Chart data
+            title: Chart title
+            custom_config: Custom configuration overrides
+
+        Returns:
+            VisualizationData instance
+        """
+        if template_id not in self.chart_templates:
+            raise ValueError(f"Template not found: {template_id}")
+
+        template = self.chart_templates[template_id]
+        config = template.config.copy()
+        if custom_config:
+            config.update(custom_config)
+
+        visualization = VisualizationData(
+            chart_type=template.chart_type,
+            title=title,
+            data=data,
+            metadata={
+                "template_id": template_id,
+                "template_name": template.name,
+                "config": config,
+            },
+        )
+
+        self._stats["total_visualizations_created"] += 1
+        self._stats["by_chart_type"][template.chart_type.value] += 1
+        self._stats["total_data_points_rendered"] += len(data)
+
+        return visualization
+
+    async def add_real_time_subscription(
+        self,
+        connection_id: str,
+        visualization_query: Dict[str, Any],
+        update_interval: float = 5.0,
+    ) -> str:
+        """Add a real-time update subscription.
+
+        Args:
+            connection_id: WebSocket connection ID
+            visualization_query: Query parameters for updates
+            update_interval: Update interval in seconds
+
+        Returns:
+            Subscription ID
+        """
+        subscription_id = str(uuid4())
+
+        subscription = RealTimeUpdate(
+            connection_id=connection_id,
+            visualization_id=subscription_id,
+            update_interval=update_interval,
+            last_update=time.time(),
+            filters=visualization_query,
+        )
+
+        self.real_time_updates[subscription_id] = subscription
+        self._stats["total_real_time_subscriptions"] += 1
+
+        # Start the update task
+        asyncio.create_task(self._run_real_time_updates(subscription_id))
+
+        logger.info(f"Added real-time subscription {subscription_id} for connection {connection_id}")
+        return subscription_id
+
+    async def remove_real_time_subscription(self, subscription_id: str):
+        """Remove a real-time update subscription.
+
+        Args:
+            subscription_id: Subscription ID to remove
+        """
+        if subscription_id in self.real_time_updates:
+            del self.real_time_updates[subscription_id]
+            self._stats["total_real_time_subscriptions"] = len(self.real_time_updates)
+            logger.info(f"Removed real-time subscription {subscription_id}")
+
+    async def _run_real_time_updates(self, subscription_id: str):
+        """Run real-time updates for a subscription.
+
+        Args:
+            subscription_id: Subscription ID
+        """
+        while subscription_id in self.real_time_updates:
+            subscription = self.real_time_updates[subscription_id]
+
+            try:
+                # Check if it's time for an update
+                current_time = time.time()
+                if current_time - subscription.last_update >= subscription.update_interval:
+                    # Generate new visualization data
+                    viz_data = await self._generate_realtime_data(subscription.filters)
+
+                    # Send update via WebSocket
+                    message = {
+                        "type": "visualization_update",
+                        "subscription_id": subscription_id,
+                        "data": viz_data,
+                        "timestamp": current_time,
+                    }
+
+                    await websocket_manager.send_message(
+                        subscription.connection_id,
+                        message
+                    )
+
+                    subscription.last_update = current_time
+
+                # Wait before next check
+                await asyncio.sleep(1.0)
+
+            except Exception as e:
+                logger.error(f"Error in real-time updates for {subscription_id}: {e}")
+                await asyncio.sleep(5.0)
+
+    async def _generate_realtime_data(self, filters: Dict[str, Any]) -> Dict[str, Any]:
+        """Generate real-time visualization data.
+
+        Args:
+            filters: Filter parameters
+
+        Returns:
+            Visualization data dictionary
+        """
+        # This is a simplified implementation
+        # In practice, you'd query the actual data based on filters
+
+        chart_type = filters.get("chart_type", "line")
+        task_ids = filters.get("task_ids", [])
+
+        if chart_type == "line":
+            data = [
+                {"time": datetime.utcnow().isoformat(), "value": 50 + (time.time() % 100)},
+                {"time": (datetime.utcnow() - timedelta(minutes=1)).isoformat(), "value": 48},
+                {"time": (datetime.utcnow() - timedelta(minutes=2)).isoformat(), "value": 46},
+            ]
+        elif chart_type == "pie":
+            data = [
+                {"status": "completed", "count": 45},
+                {"status": "running", "count": 20},
+                {"status": "failed", "count": 5},
+            ]
+        else:
+            data = [{"value": 75, "label": "Current"}]
+
+        return {
+            "chart_type": chart_type,
+            "data": data,
+            "filters": filters,
+        }
+
+    async def create_animated_chart(
+        self,
+        base_data: List[Dict[str, Any]],
+        animation_config: Dict[str, Any],
+    ) -> VisualizationData:
+        """Create a chart with animations.
+
+        Args:
+            base_data: Base chart data
+            animation_config: Animation configuration
+
+        Returns:
+            VisualizationData with animation metadata
+        """
+        # Add animation metadata to visualization
+        metadata = {
+            "animation": {
+                "enabled": True,
+                "type": animation_config.get("type", "fade"),
+                "duration": animation_config.get("duration", 1000),
+                "easing": animation_config.get("easing", "ease-in-out"),
+                "stagger": animation_config.get("stagger", 0),
+            },
+            "transitions": {
+                "enabled": True,
+                "duration": animation_config.get("transition_duration", 500),
+            },
+        }
+
+        visualization = VisualizationData(
+            chart_type=ChartType.LINE,
+            title=animation_config.get("title", "Animated Chart"),
+            data=base_data,
+            metadata=metadata,
+        )
+
+        return visualization
+
+    def add_chart_template(
+        self,
+        template_id: str,
+        name: str,
+        chart_type: ChartType,
+        config: Dict[str, Any],
+        description: str = "",
+    ) -> ChartTemplate:
+        """Add a custom chart template.
+
+        Args:
+            template_id: Template ID
+            name: Template name
+            chart_type: Type of chart
+            config: Chart configuration
+            description: Template description
+
+        Returns:
+            Created ChartTemplate instance
+        """
+        template = ChartTemplate(
+            template_id=template_id,
+            name=name,
+            chart_type=chart_type,
+            config=config,
+            description=description,
+        )
+
+        self.chart_templates[template_id] = template
+        self._stats["total_templates_created"] += 1
+
+        logger.info(f"Added chart template: {name}")
+        return template
+
+    def get_chart_template(self, template_id: str) -> Optional[ChartTemplate]:
+        """Get a chart template by ID.
+
+        Args:
+            template_id: Template ID
+
+        Returns:
+            ChartTemplate instance or None if not found
+        """
+        return self.chart_templates.get(template_id)
+
+    def list_chart_templates(self) -> List[ChartTemplate]:
+        """List all available chart templates.
+
+        Returns:
+            List of ChartTemplate instances
+        """
+        return list(self.chart_templates.values())
+
+    async def export_dashboard(
+        self,
+        dashboard_id: str,
+        format: str = "json",
+    ) -> Union[str, Dict[str, Any]]:
+        """Export dashboard configuration.
+
+        Args:
+            dashboard_id: Dashboard ID to export
+            format: Export format (json, yaml)
+
+        Returns:
+            Exported dashboard as string or dict
+        """
+        dashboard_widgets = [
+            widget for widget in self.dashboard_widgets.values()
+            if widget.widget_id.startswith(dashboard_id)
+        ]
+
+        if not dashboard_widgets:
+            raise ValueError(f"Dashboard not found: {dashboard_id}")
+
+        dashboard_data = {
+            "dashboard_id": dashboard_id,
+            "exported_at": datetime.utcnow().isoformat(),
+            "widgets": [],
+        }
+
+        for widget in dashboard_widgets:
+            dashboard_data["widgets"].append({
+                "widget_id": widget.widget_id,
+                "title": widget.title,
+                "chart_type": widget.chart_type.value,
+                "position": widget.position,
+                "size": widget.size,
+                "query": widget.query.dict(),
+            })
+
+        if format == "json":
+            return json.dumps(dashboard_data, indent=2)
+        elif format == "yaml":
+            try:
+                import yaml
+                return yaml.dump(dashboard_data, default_flow_style=False)
+            except ImportError:
+                raise ValueError("PyYAML not installed")
+        else:
+            raise ValueError(f"Unsupported export format: {format}")
+
     def get_stats(self) -> Dict[str, Any]:
         """Get visualization manager statistics.
 
@@ -697,6 +1117,8 @@ class VisualizationManager:
         return {
             **dict(self._stats),
             "total_widgets": len(self.dashboard_widgets),
+            "total_templates": len(self.chart_templates),
+            "active_subscriptions": len(self.real_time_updates),
         }
 
 

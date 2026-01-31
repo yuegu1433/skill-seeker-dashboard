@@ -34,6 +34,7 @@ from .utils.validators import (
 from .utils.serializers import serialize_log_entry
 from .utils.formatters import format_timestamp, format_relative_time
 from .websocket import websocket_manager
+from ..storage.manager import SkillStorageManager
 
 logger = logging.getLogger(__name__)
 
@@ -149,13 +150,15 @@ class LogStream:
 class LogManager:
     """Core manager for task execution logs."""
 
-    def __init__(self, db_session: Optional[Session] = None):
+    def __init__(self, db_session: Optional[Session] = None, storage_manager: Optional[SkillStorageManager] = None):
         """Initialize log manager.
 
         Args:
             db_session: SQLAlchemy database session (optional)
+            storage_manager: MinIO storage manager for log export (optional)
         """
         self.db_session = db_session
+        self.storage_manager = storage_manager
         self.log_streams: Dict[str, LogStream] = {}
         self.log_handlers: List[Callable] = []
         self._lock = asyncio.Lock()
@@ -164,6 +167,8 @@ class LogManager:
             "logs_by_level": defaultdict(int),
             "active_streams": 0,
             "total_subscribers": 0,
+            "exported_files": 0,
+            "total_export_size": 0,
         }
 
     async def create_log_entry(
@@ -634,6 +639,284 @@ class LogManager:
                 s.get_subscriber_count() for s in self.log_streams.values()
             ),
         }
+
+    async def export_logs_to_storage(
+        self,
+        task_id: Optional[str] = None,
+        level: Optional[str] = None,
+        date_from: Optional[datetime] = None,
+        date_to: Optional[datetime] = None,
+        format: str = "json",
+        db_session: Optional[Session] = None,
+    ) -> Dict[str, Any]:
+        """Export logs to MinIO storage.
+
+        Args:
+            task_id: Filter by task ID (optional)
+            level: Filter by log level (optional)
+            date_from: Filter from date (optional)
+            date_to: Filter to date (optional)
+            format: Export format ('json', 'csv', 'txt')
+            db_session: Database session (overrides instance session)
+
+        Returns:
+            Dictionary with export results
+        """
+        if not self.storage_manager:
+            raise ValueError("Storage manager not configured")
+
+        # Get logs to export
+        query = LogQueryParams(
+            task_id=task_id,
+            level=level,
+            date_from=date_from,
+            date_to=date_to,
+            limit=10000,  # Large limit for export
+        )
+        logs = await self.list_logs(query, db_session)
+
+        if not logs:
+            return {
+                "success": False,
+                "message": "No logs found for export",
+                "file_path": None,
+                "size": 0,
+            }
+
+        # Generate filename
+        timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+        filename = f"logs_export_{timestamp}.{format}"
+        if task_id:
+            filename = f"logs_{task_id}_{timestamp}.{format}"
+
+        # Serialize logs based on format
+        if format == "json":
+            content = self._serialize_logs_json(logs)
+        elif format == "csv":
+            content = self._serialize_logs_csv(logs)
+        elif format == "txt":
+            content = self._serialize_logs_txt(logs)
+        else:
+            raise ValueError(f"Unsupported export format: {format}")
+
+        # Upload to storage
+        try:
+            from io import BytesIO
+            content_bytes = content.encode('utf-8')
+
+            # Create upload request
+            from ..storage.schemas.file_operations import FileUploadRequest
+            upload_request = FileUploadRequest(
+                skill_id=uuid4(),  # Generate temporary skill ID for logs
+                file_path=f"logs/{filename}",
+                content=content_bytes,
+                metadata={
+                    "export_type": "logs",
+                    "format": format,
+                    "task_id": task_id,
+                    "level": level,
+                    "date_from": date_from.isoformat() if date_from else None,
+                    "date_to": date_to.isoformat() if date_to else None,
+                    "log_count": len(logs),
+                },
+            )
+
+            result = await self.storage_manager.upload_file(upload_request)
+
+            # Update statistics
+            self._stats["exported_files"] += 1
+            self._stats["total_export_size"] += len(content_bytes)
+
+            return {
+                "success": True,
+                "message": f"Successfully exported {len(logs)} logs",
+                "file_path": result.file_path,
+                "size": len(content_bytes),
+                "log_count": len(logs),
+                "format": format,
+            }
+
+        except Exception as e:
+            logger.error(f"Failed to export logs: {e}")
+            return {
+                "success": False,
+                "message": f"Export failed: {str(e)}",
+                "file_path": None,
+                "size": 0,
+            }
+
+    def _serialize_logs_json(self, logs: List[TaskLog]) -> str:
+        """Serialize logs to JSON format.
+
+        Args:
+            logs: List of TaskLog instances
+
+        Returns:
+            JSON string
+        """
+        import json
+        log_data = []
+        for log in logs:
+            log_data.append({
+                "id": str(log.id),
+                "task_id": log.task_id,
+                "level": log.level,
+                "message": log.message,
+                "source": log.source,
+                "timestamp": log.timestamp.isoformat() if log.timestamp else None,
+                "context": log.context,
+                "stack_trace": log.stack_trace,
+                "attachments": log.attachments,
+            })
+        return json.dumps(log_data, indent=2, ensure_ascii=False)
+
+    def _serialize_logs_csv(self, logs: List[TaskLog]) -> str:
+        """Serialize logs to CSV format.
+
+        Args:
+            logs: List of TaskLog instances
+
+        Returns:
+            CSV string
+        """
+        import csv
+        from io import StringIO
+
+        output = StringIO()
+        writer = csv.writer(output)
+
+        # Write header
+        writer.writerow([
+            "ID", "Task ID", "Level", "Message", "Source",
+            "Timestamp", "Context", "Stack Trace"
+        ])
+
+        # Write data
+        for log in logs:
+            writer.writerow([
+                str(log.id),
+                log.task_id,
+                log.level,
+                log.message,
+                log.source,
+                log.timestamp.isoformat() if log.timestamp else "",
+                str(log.context),
+                log.stack_trace or "",
+            ])
+
+        return output.getvalue()
+
+    def _serialize_logs_txt(self, logs: List[TaskLog]) -> str:
+        """Serialize logs to plain text format.
+
+        Args:
+            logs: List of TaskLog instances
+
+        Returns:
+            Plain text string
+        """
+        lines = []
+        lines.append("=" * 80)
+        lines.append("LOG EXPORT REPORT")
+        lines.append("=" * 80)
+        lines.append(f"Total logs: {len(logs)}")
+        lines.append(f"Export time: {datetime.utcnow().isoformat()}")
+        lines.append("=" * 80)
+        lines.append("")
+
+        for log in logs:
+            lines.append(f"[{log.timestamp.isoformat() if log.timestamp else 'N/A'}] "
+                        f"[{log.level}] [{log.source}] Task: {log.task_id}")
+            lines.append(f"Message: {log.message}")
+            if log.context:
+                lines.append(f"Context: {log.context}")
+            if log.stack_trace:
+                lines.append(f"Stack: {log.stack_trace}")
+            lines.append("-" * 80)
+
+        return "\n".join(lines)
+
+    async def cleanup_old_logs(
+        self,
+        older_than_days: int = 30,
+        db_session: Optional[Session] = None,
+    ) -> Dict[str, Any]:
+        """Clean up old logs from database and streams.
+
+        Args:
+            older_than_days: Delete logs older than this many days
+            db_session: Database session (overrides instance session)
+
+        Returns:
+            Dictionary with cleanup results
+        """
+        cutoff_date = datetime.utcnow() - timedelta(days=older_than_days)
+
+        session = db_session or self.db_session
+        if not session:
+            # Clean from streams only
+            cleaned_count = 0
+            for task_id, stream in list(self.log_streams.items()):
+                # Filter out old logs
+                old_logs = [log for log in stream.logs
+                           if log.timestamp and log.timestamp < cutoff_date]
+                if old_logs:
+                    # Remove old logs from stream
+                    stream.logs = deque(
+                        [log for log in stream.logs
+                         if log.timestamp and log.timestamp >= cutoff_date],
+                        maxlen=stream.max_size
+                    )
+                    cleaned_count += len(old_logs)
+
+            return {
+                "success": True,
+                "cleaned_count": cleaned_count,
+                "cutoff_date": cutoff_date.isoformat(),
+            }
+
+        try:
+            # Query old logs
+            old_logs = session.query(TaskLog).filter(
+                TaskLog.timestamp < cutoff_date
+            ).all()
+
+            # Delete from database
+            for log in old_logs:
+                session.delete(log)
+
+            session.commit()
+
+            # Clean from streams
+            cleaned_count = 0
+            for task_id, stream in list(self.log_streams.items()):
+                # Filter out old logs
+                old_count = len([log for log in stream.logs
+                                if log.timestamp and log.timestamp < cutoff_date])
+                if old_count > 0:
+                    stream.logs = deque(
+                        [log for log in stream.logs
+                         if log.timestamp and log.timestamp >= cutoff_date],
+                        maxlen=stream.max_size
+                    )
+                    cleaned_count += old_count
+
+            logger.info(f"Cleaned up {len(old_logs)} old logs from database and {cleaned_count} from streams")
+
+            return {
+                "success": True,
+                "cleaned_count": len(old_logs),
+                "stream_cleaned_count": cleaned_count,
+                "cutoff_date": cutoff_date.isoformat(),
+            }
+
+        except Exception as e:
+            logger.error(f"Failed to cleanup old logs: {e}")
+            return {
+                "success": False,
+                "error": str(e),
+                "cleaned_count": 0,
+            }
 
 
 # Global log manager instance

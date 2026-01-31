@@ -19,6 +19,7 @@ from .schemas.websocket_messages import (
 from .progress_manager import progress_manager
 from .log_manager import log_manager
 from .notification_manager import notification_manager
+from .visualization_manager import visualization_manager
 from .websocket import websocket_manager
 
 logger = logging.getLogger(__name__)
@@ -317,6 +318,219 @@ class NotificationWebSocketHandler:
             )
 
 
+class VisualizationWebSocketHandler:
+    """Handler for visualization-related WebSocket messages."""
+
+    def __init__(self):
+        """Initialize visualization handler."""
+        self.active_subscriptions: Dict[str, str] = {}  # Maps connection_id to subscription_id
+
+    async def handle_message(
+        self,
+        connection_id: str,
+        message: Dict[str, Any],
+    ) -> bool:
+        """Handle visualization-related message.
+
+        Args:
+            connection_id: WebSocket connection ID
+            message: Received message
+
+        Returns:
+            True if handled successfully
+        """
+        try:
+            msg_type = message.get("type")
+
+            if msg_type == "subscribe_visualization":
+                await self._handle_subscribe_visualization(connection_id, message)
+            elif msg_type == "unsubscribe_visualization":
+                await self._handle_unsubscribe_visualization(connection_id, message)
+            elif msg_type == "update_visualization":
+                await self._handle_update_visualization(connection_id, message)
+            elif msg_type == "create_chart":
+                await self._handle_create_chart(connection_id, message)
+            else:
+                logger.warning(f"Unknown visualization message type: {msg_type}")
+
+            return True
+
+        except Exception as e:
+            logger.error(f"Error handling visualization message: {e}")
+            return False
+
+    async def _handle_subscribe_visualization(
+        self,
+        connection_id: str,
+        message: Dict[str, Any],
+    ):
+        """Handle visualization subscription.
+
+        Args:
+            connection_id: WebSocket connection ID
+            message: Subscription message
+        """
+        try:
+            query_params = message.get("query", {})
+            update_interval = message.get("update_interval", 5.0)
+
+            # Create real-time subscription
+            subscription_id = await visualization_manager.add_real_time_subscription(
+                connection_id=connection_id,
+                visualization_query=query_params,
+                update_interval=update_interval,
+            )
+
+            # Track subscription
+            self.active_subscriptions[connection_id] = subscription_id
+
+            # Send acknowledgment
+            await websocket_manager.send_message(connection_id, {
+                "type": "visualization_subscription_confirmed",
+                "subscription_id": subscription_id,
+                "query": query_params,
+                "update_interval": update_interval,
+            })
+
+            logger.info(f"Subscribed connection {connection_id} to visualization updates")
+
+        except Exception as e:
+            logger.error(f"Error handling visualization subscription: {e}")
+            await websocket_manager.send_error(
+                connection_id,
+                f"Failed to subscribe to visualization: {str(e)}",
+            )
+
+    async def _handle_unsubscribe_visualization(
+        self,
+        connection_id: str,
+        message: Dict[str, Any],
+    ):
+        """Handle visualization unsubscription.
+
+        Args:
+            connection_id: WebSocket connection ID
+            message: Unsubscription message
+        """
+        try:
+            subscription_id = self.active_subscriptions.get(connection_id)
+
+            if subscription_id:
+                # Remove subscription
+                await visualization_manager.remove_real_time_subscription(subscription_id)
+                del self.active_subscriptions[connection_id]
+
+                # Send acknowledgment
+                await websocket_manager.send_message(connection_id, {
+                    "type": "visualization_unsubscription_confirmed",
+                    "subscription_id": subscription_id,
+                })
+
+                logger.info(f"Unsubscribed connection {connection_id} from visualization updates")
+
+        except Exception as e:
+            logger.error(f"Error handling visualization unsubscription: {e}")
+            await websocket_manager.send_error(
+                connection_id,
+                f"Failed to unsubscribe from visualization: {str(e)}",
+            )
+
+    async def _handle_update_visualization(
+        self,
+        connection_id: str,
+        message: Dict[str, Any],
+    ):
+        """Handle visualization update request.
+
+        Args:
+            connection_id: WebSocket connection ID
+            message: Update request message
+        """
+        try:
+            chart_type = message.get("chart_type")
+            data_params = message.get("data_params", {})
+
+            # Generate updated visualization
+            if chart_type == "progress_chart":
+                chart = await visualization_manager.create_progress_chart(
+                    task_ids=data_params.get("task_ids", []),
+                    time_range=data_params.get("time_range"),
+                    group_by=data_params.get("group_by"),
+                    aggregation=data_params.get("aggregation"),
+                )
+            elif chart_type == "status_distribution":
+                chart = await visualization_manager.create_status_distribution_chart(
+                    user_id=data_params.get("user_id"),
+                    task_type=data_params.get("task_type"),
+                )
+            elif chart_type == "performance_metrics":
+                chart = await visualization_manager.create_performance_metrics_chart(
+                    task_ids=data_params.get("task_ids", []),
+                    time_range=data_params.get("time_range"),
+                )
+            else:
+                raise ValueError(f"Unknown chart type: {chart_type}")
+
+            # Send updated chart
+            await websocket_manager.send_message(connection_id, {
+                "type": "visualization_update",
+                "chart_type": chart.chart_type.value,
+                "title": chart.title,
+                "data": chart.data,
+                "metadata": chart.metadata,
+                "generated_at": chart.generated_at.isoformat(),
+            })
+
+        except Exception as e:
+            logger.error(f"Error handling visualization update: {e}")
+            await websocket_manager.send_error(
+                connection_id,
+                f"Failed to update visualization: {str(e)}",
+            )
+
+    async def _handle_create_chart(
+        self,
+        connection_id: str,
+        message: Dict[str, Any],
+    ):
+        """Handle chart creation request.
+
+        Args:
+            connection_id: WebSocket connection ID
+            message: Chart creation message
+        """
+        try:
+            template_id = message.get("template_id")
+            data = message.get("data", [])
+            title = message.get("title", "Custom Chart")
+            custom_config = message.get("custom_config", {})
+
+            # Create custom chart
+            chart = await visualization_manager.create_custom_chart(
+                template_id=template_id,
+                data=data,
+                title=title,
+                custom_config=custom_config,
+            )
+
+            # Send created chart
+            await websocket_manager.send_message(connection_id, {
+                "type": "chart_created",
+                "chart_type": chart.chart_type.value,
+                "title": chart.title,
+                "data": chart.data,
+                "metadata": chart.metadata,
+                "generated_at": chart.generated_at.isoformat(),
+            })
+
+        except Exception as e:
+            logger.error(f"Error handling chart creation: {e}")
+            await websocket_manager.send_error(
+                connection_id,
+                f"Failed to create chart: {str(e)}",
+            )
+
+
 class MetricWebSocketHandler:
     """Handler for metric-related WebSocket messages."""
 
@@ -404,6 +618,7 @@ class WebSocketEventHandler:
         self.progress_handler = ProgressWebSocketHandler()
         self.notification_handler = NotificationWebSocketHandler()
         self.metric_handler = MetricWebSocketHandler()
+        self.visualization_handler = VisualizationWebSocketHandler()
 
     async def handle_message(
         self,
@@ -435,6 +650,8 @@ class WebSocketEventHandler:
                 return await self.notification_handler.handle_message(connection_id, message)
             elif msg_type_enum in [MessageType.METRIC]:
                 return await self.metric_handler.handle_message(connection_id, message)
+            elif msg_type in ["subscribe_visualization", "unsubscribe_visualization", "update_visualization", "create_chart"]:
+                return await self.visualization_handler.handle_message(connection_id, message)
             else:
                 logger.warning(f"Unknown message type: {msg_type}")
                 await websocket_manager.send_error(connection_id, f"Unknown message type: {msg_type}")
@@ -485,11 +702,17 @@ class WebSocketEventHandler:
             connection_id: WebSocket connection ID
         """
         try:
-            # Clean up subscriptions
+            # Clean up progress subscriptions
             if connection_id in self.progress_handler.connection_tasks:
                 task_id = self.progress_handler.connection_tasks[connection_id]
                 await log_manager.unsubscribe_from_logs(task_id, connection_id)
                 del self.progress_handler.connection_tasks[connection_id]
+
+            # Clean up visualization subscriptions
+            if connection_id in self.visualization_handler.active_subscriptions:
+                subscription_id = self.visualization_handler.active_subscriptions[connection_id]
+                await visualization_manager.remove_real_time_subscription(subscription_id)
+                del self.visualization_handler.active_subscriptions[connection_id]
 
             logger.info(f"Handled WebSocket disconnection: {connection_id}")
 
