@@ -50,6 +50,20 @@ class UpdateProgressRequest(BaseModel):
         use_enum_values = True
 
 
+class UpdateStatusRequest(BaseModel):
+    """Request model for updating task status only."""
+
+    task_id: str = Field(..., min_length=1, max_length=100, description="任务ID")
+    status: str = Field(..., description="任务状态")
+    message: Optional[str] = Field(None, max_length=500, description="状态消息")
+    metadata: Optional[Dict[str, Any]] = Field(default_factory=dict, description="元数据")
+    force_update: bool = Field(default=False, description="强制更新状态")
+
+    class Config:
+        """Pydantic configuration."""
+        use_enum_values = True
+
+
 class TaskProgressResponse(BaseModel):
     """Response model for task progress information."""
 
@@ -437,3 +451,107 @@ class MetricAggregateResponse(BaseModel):
         """Pydantic configuration."""
         use_enum_values = True
         json_encoders = {datetime: lambda v: v.isoformat()}
+
+
+# =============================================================================
+# Additional Request Models for Missing Imports
+# =============================================================================
+
+class CreateLogEntryRequest(BaseModel):
+    """Request model for creating a log entry."""
+
+    task_id: str = Field(..., min_length=1, max_length=100, description="任务ID")
+    user_id: str = Field(..., min_length=1, max_length=100, description="用户ID")
+    level: str = Field(..., description="日志级别")
+    message: str = Field(..., max_length=1000, description="日志消息")
+    details: Optional[Dict[str, Any]] = Field(default_factory=dict, description="日志详情")
+    metadata: Optional[Dict[str, Any]] = Field(default_factory=dict, description="元数据")
+
+    class Config:
+        """Pydantic configuration."""
+        use_enum_values = True
+
+
+class CreateNotificationRequest(BaseModel):
+    """Request model for creating a notification."""
+
+    user_id: str = Field(..., min_length=1, max_length=100, description="用户ID")
+    title: str = Field(..., max_length=200, description="通知标题")
+    message: str = Field(..., max_length=1000, description="通知消息")
+    notification_type: str = Field(..., description="通知类型")
+    priority: str = Field(default="normal", description="优先级")
+    metadata: Optional[Dict[str, Any]] = Field(default_factory=dict, description="元数据")
+
+    class Config:
+        """Pydantic configuration."""
+        use_enum_values = True
+
+
+class TaskQueryParams(BaseModel):
+    """Query parameters for task operations."""
+
+    user_id: Optional[str] = Field(None, description="用户ID")
+    task_type: Optional[str] = Field(None, description="任务类型")
+    status: Optional[str] = Field(None, description="任务状态")
+    tags: Optional[List[str]] = Field(None, description="标签")
+    limit: int = Field(default=50, ge=1, le=1000, description="限制数量")
+    offset: int = Field(default=0, ge=0, description="偏移量")
+    sort_by: str = Field(default="updated_at", description="排序字段")
+    sort_order: str = Field(default="desc", description="排序方向")
+
+    class Config:
+        """Pydantic configuration."""
+        use_enum_values = True
+
+
+class LogQueryParams(BaseModel):
+    """Query parameters for log operations."""
+
+    task_id: Optional[str] = Field(None, description="任务ID")
+    user_id: Optional[str] = Field(None, description="用户ID")
+    level: Optional[str] = Field(None, description="日志级别")
+    date_from: Optional[datetime] = Field(None, description="开始时间")
+    date_to: Optional[datetime] = Field(None, description="结束时间")
+    limit: int = Field(default=100, ge=1, le=1000, description="限制数量")
+    offset: int = Field(default=0, ge=0, description="偏移量")
+
+    class Config:
+        """Pydantic configuration."""
+        use_enum_values = True
+
+
+class NotificationQueryParams(BaseModel):
+    """Query parameters for notification operations."""
+
+    user_id: Optional[str] = Field(None, description="用户ID")
+    notification_type: Optional[str] = Field(None, description="通知类型")
+    is_read: Optional[bool] = Field(None, description="是否已读")
+    priority: Optional[str] = Field(None, description="优先级")
+    limit: int = Field(default=50, ge=1, le=1000, description="限制数量")
+    offset: int = Field(default=0, ge=0, description="偏移量")
+
+    class Config:
+        """Pydantic configuration."""
+        use_enum_values = True
+
+
+class BulkUpdateRequest(BaseModel):
+    """Request model for bulk update operations."""
+
+    task_ids: List[str] = Field(..., description="任务ID列表")
+    status: Optional[str] = Field(None, description="状态")
+    metadata: Optional[Dict[str, Any]] = Field(default_factory=dict, description="元数据")
+
+    class Config:
+        """Pydantic configuration."""
+        use_enum_values = True
+
+
+class BulkLogRequest(BaseModel):
+    """Request model for bulk log operations."""
+
+    logs: List[CreateLogEntryRequest] = Field(..., description="日志条目列表")
+
+    class Config:
+        """Pydantic configuration."""
+        use_enum_values = True
