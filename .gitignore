@@ -29,3 +29,4 @@ TASK_COMPLETION_SUMMARY.md
 test_progress_integration.py
 test_progress_models.py
 docs/realtime-progress-tracking.md
+docs/skill-management-system.md
