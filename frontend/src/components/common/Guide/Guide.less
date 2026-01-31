@@ -1,0 +1,426 @@
+/* Guide Component Styles */
+
+.guide-system {
+  font-family: var(--font-family-base, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+
+  /* Help button */
+  .guide-system-help-button {
+    position: relative;
+    z-index: 1000;
+  }
+
+  /* Panel overlay */
+  .guide-system-panel-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+  }
+
+  /* Panel */
+  .guide-system-panel {
+    background-color: var(--color-bg-base, #ffffff);
+    border-radius: 8px;
+    box-shadow: var(--shadow-lg, 0 4px 12px rgba(0, 0, 0, 0.15));
+    width: 400px;
+    max-height: 600px;
+    display: flex;
+    flex-direction: column;
+    animation: slideInUp 0.3s ease;
+
+    .guide-panel-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--color-border-light, #f0f0f0);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .ant-typography {
+        color: var(--color-text, #000000);
+      }
+    }
+
+    .guide-panel-content {
+      padding: 20px;
+      overflow-y: auto;
+      max-height: 500px;
+
+      .guide-preferences {
+        .preference-item {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 8px 0;
+
+          .ant-typography {
+            font-size: 14px;
+          }
+        }
+      }
+
+      .guide-suggestions,
+      .guide-sessions {
+        .ant-btn {
+          text-align: left;
+          height: auto;
+          padding: 12px;
+          white-space: normal;
+
+          .ant-typography {
+            display: block;
+          }
+        }
+      }
+    }
+  }
+
+  /* Smart tooltip */
+  .smart-tooltip {
+    position: relative;
+    z-index: 1001;
+    animation: tooltipFadeIn 0.3s ease;
+
+    .smart-tooltip-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+
+      .smart-tooltip-icon {
+        font-size: 16px;
+        margin-right: 8px;
+      }
+
+      .smart-tooltip-title {
+        font-weight: 600;
+        color: inherit;
+      }
+    }
+
+    .smart-tooltip-content {
+      line-height: 1.5;
+    }
+
+    .smart-tooltip-progress {
+      .ant-progress-line {
+        margin-bottom: 4px;
+      }
+    }
+
+    .smart-tooltip-actions {
+      .ant-btn {
+        min-width: 80px;
+      }
+    }
+
+    /* Variants */
+    &.default {
+      border-color: var(--color-border, #d9d9d9);
+      background-color: var(--color-bg-base, #ffffff);
+    }
+
+    &.help {
+      border-color: var(--color-primary, #1890ff);
+      background-color: var(--color-primary-light, #f0f9ff);
+    }
+
+    &.tip {
+      border-color: var(--color-success, #52c41a);
+      background-color: var(--color-success-light, #f6ffed);
+    }
+
+    &.warning {
+      border-color: var(--color-warning, #faad14);
+      background-color: var(--color-warning-light, #fffbe6);
+    }
+
+    &.success {
+      border-color: var(--color-success, #52c41a);
+      background-color: var(--color-success-light, #f6ffed);
+    }
+  }
+
+  /* Tooltip overlay */
+  .smart-tooltip-overlay {
+    .ant-popover-arrow {
+      display: none;
+    }
+
+    .ant-popover-inner {
+      padding: 0;
+      background-color: transparent;
+      box-shadow: none;
+    }
+  }
+
+  /* Onboarding */
+  .onboarding-modal {
+    .ant-modal-content {
+      border-radius: 12px;
+    }
+
+    .onboarding-content {
+      .onboarding-progress {
+        margin-bottom: 16px;
+        text-align: center;
+
+        .ant-progress {
+          margin-bottom: 4px;
+        }
+
+        .ant-typography {
+          font-size: 12px;
+        }
+      }
+
+      .onboarding-steps {
+        margin-bottom: 24px;
+
+        .ant-steps {
+          .ant-steps-item {
+            .ant-steps-item-icon {
+              background-color: var(--color-primary-light, #f0f9ff);
+              border-color: var(--color-primary, #1890ff);
+
+              .anticon {
+                color: var(--color-primary, #1890ff);
+              }
+            }
+
+            &.ant-steps-item-active {
+              .ant-steps-item-icon {
+                background-color: var(--color-primary, #1890ff);
+                border-color: var(--color-primary, #1890ff);
+
+                .anticon {
+                  color: #ffffff;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .onboarding-step-card {
+        background-color: transparent;
+        margin-bottom: 24px;
+
+        .onboarding-step-header {
+          margin-bottom: 16px;
+
+          .onboarding-step-icon {
+            font-size: 24px;
+            color: var(--color-primary, #1890ff);
+            margin-right: 16px;
+          }
+
+          .ant-typography {
+            color: var(--color-text, #000000);
+          }
+        }
+
+        .onboarding-step-content {
+          .ant-typography {
+            color: var(--color-text, #000000);
+            line-height: 1.6;
+
+            .ant-list-item {
+              .anticon {
+                color: var(--color-success, #52c41a);
+              }
+            }
+          }
+        }
+      }
+
+      .onboarding-navigation {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 16px;
+        border-top: 1px solid var(--color-border-light, #f0f0f0);
+
+        .onboarding-navigation-left,
+        .onboarding-navigation-right {
+          .ant-btn {
+            min-width: 100px;
+          }
+        }
+      }
+    }
+  }
+
+  /* Dark theme */
+  &.dark {
+    .guide-system-panel {
+      background-color: var(--color-bg-base-dark, #1f1f1f);
+      border-color: var(--color-border-dark, #303030);
+
+      .guide-panel-header {
+        border-bottom-color: var(--color-border-dark, #303030);
+
+        .ant-typography {
+          color: var(--color-text-dark, #ffffff);
+        }
+      }
+
+      .guide-panel-content {
+        .guide-preferences,
+        .guide-suggestions,
+        .guide-sessions {
+          .ant-typography {
+            color: var(--color-text-dark, #ffffff);
+          }
+        }
+      }
+    }
+
+    .smart-tooltip {
+      &.default {
+        background-color: var(--color-bg-base-dark, #1f1f1f);
+        border-color: var(--color-border-dark, #434343);
+        color: var(--color-text-dark, #ffffff);
+      }
+    }
+
+    .onboarding-modal {
+      .onboarding-content {
+        .onboarding-step-card {
+          .onboarding-step-header {
+            .ant-typography {
+              color: var(--color-text-dark, #ffffff);
+            }
+
+            .onboarding-step-icon {
+              color: var(--color-primary-dark, #177ddc);
+            }
+          }
+
+          .onboarding-step-content {
+            .ant-typography {
+              color: var(--color-text-dark, #ffffff);
+            }
+          }
+        }
+
+        .onboarding-navigation {
+          border-top-color: var(--color-border-dark, #303030);
+        }
+      }
+    }
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .guide-system {
+    .guide-system-panel-overlay {
+      padding: 16px;
+    }
+
+    .guide-system-panel {
+      width: 100%;
+      max-width: 400px;
+      max-height: calc(100vh - 32px);
+    }
+
+    .onboarding-modal {
+      .ant-modal {
+        width: calc(100vw - 32px) !important;
+        margin: 16px auto;
+        max-width: 400px;
+      }
+
+      .onboarding-content {
+        .onboarding-navigation {
+          flex-direction: column;
+          gap: 12px;
+
+          .onboarding-navigation-left,
+          .onboarding-navigation-right {
+            width: 100%;
+
+            .ant-btn {
+              width: 100%;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+/* High contrast theme */
+[data-theme='high-contrast'] {
+  .guide-system {
+    .guide-system-panel {
+      border: 2px solid var(--color-border, #000000);
+    }
+
+    .smart-tooltip {
+      border: 2px solid var(--color-border, #000000);
+    }
+
+    .onboarding-modal {
+      .onboarding-content {
+        .onboarding-step-card {
+          border: 2px solid var(--color-border, #000000);
+        }
+
+        .onboarding-navigation {
+          border-top: 2px solid var(--color-border, #000000);
+        }
+      }
+    }
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .guide-system {
+    .guide-system-panel,
+    .smart-tooltip,
+    .onboarding-modal {
+      animation: none !important;
+    }
+  }
+}

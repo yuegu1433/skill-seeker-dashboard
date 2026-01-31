@@ -1,0 +1,515 @@
+/* Navigation Component Styles */
+
+.custom-navigation {
+  font-family: var(--font-family-base, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+
+  /* Navigation menu */
+  .custom-navigation-menu {
+    border: none;
+    background-color: transparent;
+
+    /* Menu items */
+    .ant-menu-item,
+    .ant-menu-submenu-title {
+      height: 40px;
+      line-height: 40px;
+      margin: 4px 0;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background-color: var(--color-bg-hover, #f5f5f5);
+      }
+
+      &.ant-menu-item-selected {
+        background-color: var(--color-primary-light, #f0f9ff);
+        color: var(--color-primary, #1890ff);
+
+        &::after {
+          display: none;
+        }
+      }
+    }
+
+    /* Submenu */
+    .ant-menu-sub {
+      background-color: transparent;
+
+      .ant-menu-item {
+        margin: 2px 8px;
+        height: 32px;
+        line-height: 32px;
+
+        &.ant-menu-item-selected {
+          background-color: var(--color-primary-light, #f0f9ff);
+          color: var(--color-primary, #1890ff);
+        }
+      }
+    }
+
+    /* Submenu arrow */
+    .ant-menu-submenu-arrow {
+      color: var(--color-text-secondary, #666666);
+
+      &::before,
+      &::after {
+        background-color: currentColor;
+      }
+    }
+
+    /* Disabled items */
+    .ant-menu-item-disabled,
+    .ant-menu-submenu-disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+
+      &:hover {
+        background-color: transparent;
+      }
+    }
+  }
+
+  /* Horizontal mode */
+  &.custom-navigation--horizontal {
+    .custom-navigation-menu {
+      display: flex;
+      align-items: center;
+
+      .ant-menu-item,
+      .ant-menu-submenu-title {
+        margin: 0 8px;
+        height: 48px;
+        line-height: 48px;
+      }
+
+      .ant-menu-submenu {
+        .ant-menu {
+          margin-top: 8px;
+        }
+      }
+    }
+  }
+
+  /* Vertical mode */
+  &.custom-navigation--vertical {
+    .custom-navigation-menu {
+      .ant-menu-item,
+      .ant-menu-submenu-title {
+        width: 100%;
+      }
+    }
+  }
+
+  /* Collapsed mode */
+  &.custom-navigation--collapsed {
+    .custom-navigation-menu {
+      .ant-menu-item,
+      .ant-menu-submenu-title {
+        padding: 0 16px;
+        text-align: center;
+
+        .anticon {
+          font-size: 16px;
+        }
+      }
+    }
+  }
+
+  /* Badge */
+  .navigation-badge {
+    display: inline-block;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    background-color: var(--color-error, #f5222d);
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 16px;
+    text-align: center;
+    border-radius: 8px;
+  }
+
+  /* Hotkey */
+  .navigation-hotkey {
+    font-size: 11px;
+    font-family: monospace;
+    opacity: 0.6;
+    margin-left: 8px;
+  }
+
+  /* Dark theme */
+  &.custom-navigation--dark {
+    .custom-navigation-menu {
+      .ant-menu-item,
+      .ant-menu-submenu-title {
+        &:hover {
+          background-color: var(--color-bg-hover-dark, #262626);
+        }
+
+        &.ant-menu-item-selected {
+          background-color: rgba(23, 125, 220, 0.15);
+          color: var(--color-primary-dark, #177ddc);
+        }
+      }
+
+      .ant-menu-sub {
+        .ant-menu-item {
+          &.ant-menu-item-selected {
+            background-color: rgba(23, 125, 220, 0.15);
+            color: var(--color-primary-dark, #177ddc);
+          }
+        }
+      }
+
+      .ant-menu-submenu-arrow {
+        color: var(--color-text-secondary-dark, #a6a6a6);
+      }
+    }
+  }
+}
+
+/* Breadcrumbs Styles */
+.custom-breadcrumbs {
+  font-family: var(--font-family-base, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+
+  .custom-breadcrumbs-list {
+    .ant-breadcrumb {
+      line-height: 1.5;
+
+      a {
+        color: var(--color-text-secondary, #666666);
+        transition: color 0.2s ease;
+
+        &:hover {
+          color: var(--color-primary, #1890ff);
+        }
+      }
+
+      .ant-breadcrumb-separator {
+        color: var(--color-text-placeholder, #bfbfbf);
+      }
+    }
+  }
+
+  /* Breadcrumb items */
+  .breadcrumb-item {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+
+    &:hover:not(.breadcrumb-item--disabled):not(.breadcrumb-item--active) {
+      background-color: var(--color-bg-hover, #f5f5f5);
+      color: var(--color-primary, #1890ff);
+    }
+
+    &:focus {
+      outline: 2px solid var(--color-primary, #1890ff);
+      outline-offset: 2px;
+    }
+
+    /* Active item */
+    &.breadcrumb-item--active {
+      color: var(--color-text, #000000);
+      cursor: default;
+    }
+
+    /* Disabled item */
+    &.breadcrumb-item--disabled {
+      color: var(--color-text-disabled, #bfbfbf);
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    /* Icon */
+    .breadcrumb-icon {
+      margin-right: 4px;
+      font-size: 14px;
+      color: var(--color-text-secondary, #666666);
+    }
+
+    /* Title */
+    .breadcrumb-title {
+      font-size: 14px;
+    }
+  }
+
+  /* Dark theme */
+  &.custom-breadcrumbs--dark {
+    .custom-breadcrumbs-list {
+      .ant-breadcrumb {
+        a {
+          color: var(--color-text-secondary-dark, #a6a6a6);
+
+          &:hover {
+            color: var(--color-primary-dark, #177ddc);
+          }
+        }
+
+        .ant-breadcrumb-separator {
+          color: var(--color-text-placeholder-dark, #595959);
+        }
+      }
+    }
+
+    .breadcrumb-item {
+      &:hover:not(.breadcrumb-item--disabled):not(.breadcrumb-item--active) {
+        background-color: var(--color-bg-hover-dark, #262626);
+        color: var(--color-primary-dark, #177ddc);
+      }
+
+      &.breadcrumb-item--active {
+        color: var(--color-text-dark, #ffffff);
+      }
+
+      &.breadcrumb-item--disabled {
+        color: var(--color-text-disabled-dark, #595959);
+      }
+
+      .breadcrumb-icon {
+        color: var(--color-text-secondary-dark, #a6a6a6);
+      }
+    }
+  }
+}
+
+/* Shortcuts Styles */
+.custom-shortcuts {
+  font-family: var(--font-family-base, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+
+  /* Header */
+  .shortcuts-header {
+    margin-bottom: 16px;
+  }
+
+  /* Categories */
+  .shortcuts-categories {
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--color-border-light, #f0f0f0);
+  }
+
+  /* List */
+  .shortcuts-list {
+    max-height: 400px;
+    overflow-y: auto;
+
+    .shortcuts-list-content {
+      .ant-list-item {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--color-border-light, #f0f0f0);
+        transition: background-color 0.2s ease;
+        cursor: pointer;
+
+        &:hover {
+          background-color: var(--color-bg-hover, #f5f5f5);
+        }
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        /* Disabled item */
+        &.shortcut-item--disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+
+          &:hover {
+            background-color: transparent;
+          }
+        }
+
+        .ant-list-item-meta {
+          .ant-list-item-meta-avatar {
+            .shortcut-icon {
+              font-size: 16px;
+              color: var(--color-text-secondary, #666666);
+            }
+          }
+
+          .ant-list-item-meta-title {
+            margin-bottom: 4px;
+
+            .shortcut-name {
+              font-weight: 500;
+              color: var(--color-text, #000000);
+            }
+
+            .shortcut-description {
+              font-size: 12px;
+              margin-left: 8px;
+            }
+          }
+
+          .ant-list-item-meta-description {
+            .shortcut-keys {
+              font-family: monospace;
+              font-size: 12px;
+              padding: 2px 6px;
+              background-color: var(--color-bg-secondary, #f5f5f5);
+              border-radius: 4px;
+              color: var(--color-text, #000000);
+            }
+
+            .shortcut-category {
+              font-size: 12px;
+              margin-left: 8px;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /* Dark theme */
+  &.custom-shortcuts--dark {
+    .shortcuts-categories {
+      border-bottom-color: var(--color-border-dark, #303030);
+    }
+
+    .shortcuts-list {
+      .shortcuts-list-content {
+        .ant-list-item {
+          border-bottom-color: var(--color-border-dark, #303030);
+
+          &:hover {
+            background-color: var(--color-bg-hover-dark, #262626);
+          }
+
+          .ant-list-item-meta {
+            .ant-list-item-meta-avatar {
+              .shortcut-icon {
+                color: var(--color-text-secondary-dark, #a6a6a6);
+              }
+            }
+
+            .ant-list-item-meta-title {
+              .shortcut-name {
+                color: var(--color-text-dark, #ffffff);
+              }
+            }
+
+            .ant-list-item-meta-description {
+              .shortcut-keys {
+                background-color: var(--color-bg-secondary-dark, #262626);
+                color: var(--color-text-dark, #ffffff);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .custom-navigation {
+    &.custom-navigation--horizontal {
+      .custom-navigation-menu {
+        flex-wrap: wrap;
+
+        .ant-menu-item,
+        .ant-menu-submenu-title {
+          margin: 2px 4px;
+          height: 36px;
+          line-height: 36px;
+          font-size: 13px;
+        }
+      }
+    }
+  }
+
+  .custom-breadcrumbs {
+    .breadcrumb-item {
+      padding: 2px 4px;
+      font-size: 13px;
+
+      .breadcrumb-icon {
+        font-size: 12px;
+      }
+    }
+  }
+
+  .custom-shortcuts {
+    .shortcuts-list {
+      max-height: 300px;
+
+      .shortcuts-list-content {
+        .ant-list-item {
+          padding: 8px 12px;
+
+          .ant-list-item-meta {
+            .ant-list-item-meta-title {
+              .shortcut-name {
+                font-size: 13px;
+              }
+
+              .shortcut-description {
+                font-size: 11px;
+              }
+            }
+
+            .ant-list-item-meta-description {
+              .shortcut-keys {
+                font-size: 11px;
+              }
+
+              .shortcut-category {
+                font-size: 11px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+/* High contrast theme */
+[data-theme='high-contrast'] {
+  .custom-navigation {
+    .custom-navigation-menu {
+      .ant-menu-item,
+      .ant-menu-submenu-title {
+        border: 1px solid transparent;
+
+        &:hover {
+          border-color: var(--color-border, #000000);
+        }
+
+        &.ant-menu-item-selected {
+          border-color: var(--color-primary, #0066cc);
+          font-weight: 600;
+        }
+      }
+    }
+  }
+
+  .custom-breadcrumbs {
+    .breadcrumb-item {
+      border: 1px solid transparent;
+
+      &:hover:not(.breadcrumb-item--disabled):not(.breadcrumb-item--active) {
+        border-color: var(--color-border, #000000);
+      }
+    }
+  }
+
+  .custom-shortcuts {
+    .shortcuts-list {
+      .shortcuts-list-content {
+        .ant-list-item {
+          border: 1px solid var(--color-border, #000000);
+
+          &:hover {
+            border-color: var(--color-primary, #0066cc);
+          }
+        }
+      }
+    }
+  }
+}

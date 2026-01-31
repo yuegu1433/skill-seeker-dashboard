@@ -1,0 +1,489 @@
+/* Table Component Styles */
+
+.custom-table {
+  font-family: var(--font-family-base, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+  background-color: var(--color-bg-base, #ffffff);
+  border-radius: var(--border-radius-base, 8px);
+  overflow: hidden;
+
+  /* Table container */
+  .ant-table-wrapper {
+    border-radius: var(--border-radius-base, 8px);
+    overflow: hidden;
+  }
+
+  /* Table */
+  .ant-table {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--color-text, #000000);
+    background-color: var(--color-bg-base, #ffffff);
+  }
+
+  /* Table head */
+  .ant-table-thead > tr > th {
+    background-color: var(--color-bg-secondary, #fafafa);
+    color: var(--color-text-secondary, #666666);
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 12px 16px;
+    border-bottom: 2px solid var(--color-border, #f0f0f0);
+    white-space: nowrap;
+    position: relative;
+
+    /* Sort icons */
+    .ant-table-column-sorter {
+      color: var(--color-text-secondary, #666666);
+      margin-left: 8px;
+
+      &:hover {
+        color: var(--color-text, #000000);
+      }
+
+      .ant-table-column-sorter-up,
+      .ant-table-column-sorter-down {
+        color: var(--color-text-secondary, #666666);
+
+        &.active {
+          color: var(--color-primary, #1890ff);
+        }
+      }
+    }
+
+    /* Filter icons */
+    .ant-table-filter-trigger {
+      color: var(--color-text-secondary, #666666);
+      margin-left: 8px;
+      padding: 0 4px;
+      border-radius: var(--border-radius-sm, 4px);
+      transition: all var(--transition-base, 0.2s ease);
+
+      &:hover {
+        background-color: var(--color-bg-hover, #f5f5f5);
+        color: var(--color-text, #000000);
+      }
+
+      &.active {
+        color: var(--color-primary, #1890ff);
+        background-color: var(--color-primary-light, #f0f9ff);
+      }
+    }
+
+    /* Resize handle */
+    .ant-table-header-column-resize {
+      background-color: var(--color-border, #f0f0f0);
+
+      &:hover {
+        background-color: var(--color-primary, #1890ff);
+      }
+    }
+  }
+
+  /* Table body */
+  .ant-table-tbody > tr {
+    transition: background-color var(--transition-base, 0.2s ease);
+
+    &:hover > td {
+      background-color: var(--color-bg-hover, #f5f5f5);
+    }
+
+    &.ant-table-row-selected > td {
+      background-color: var(--color-primary-light, #e6f7ff);
+    }
+
+    &.ant-table-row-selected:hover > td {
+      background-color: var(--color-primary-light-hover, #d6f0ff);
+    }
+
+    > td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--color-border-light, #f0f0f0);
+      font-size: 14px;
+      color: var(--color-text, #000000);
+
+      /* Row expand icon */
+      .ant-table-row-expand-icon {
+        color: var(--color-text-secondary, #666666);
+        border-color: var(--color-border, #d9d9d9);
+        background-color: var(--color-bg-base, #ffffff);
+
+        &:hover {
+          color: var(--color-primary, #1890ff);
+          border-color: var(--color-primary, #1890ff);
+        }
+
+        &.ant-table-row-expand-icon-expanded {
+          color: var(--color-primary, #1890ff);
+        }
+      }
+    }
+  }
+
+  /* Pagination */
+  .ant-pagination {
+    margin-top: var(--spacing-lg, 24px);
+    text-align: right;
+
+    .ant-pagination-item {
+      border-radius: var(--border-radius-base, 6px);
+      border: 1px solid var(--color-border, #d9d9d9);
+      background-color: var(--color-bg-base, #ffffff);
+      color: var(--color-text, #000000);
+      transition: all var(--transition-base, 0.2s ease);
+
+      &:hover {
+        border-color: var(--color-primary, #1890ff);
+
+        a {
+          color: var(--color-primary, #1890ff);
+        }
+      }
+
+      &.ant-pagination-item-active {
+        border-color: var(--color-primary, #1890ff);
+        background-color: var(--color-primary, #1890ff);
+
+        a {
+          color: var(--color-text-on-primary, #ffffff);
+        }
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--color-primary, #1890ff);
+        outline-offset: 2px;
+      }
+    }
+
+    .ant-pagination-prev,
+    .ant-pagination-next {
+      border: 1px solid var(--color-border, #d9d9d9);
+      background-color: var(--color-bg-base, #ffffff);
+      color: var(--color-text, #000000);
+      border-radius: var(--border-radius-base, 6px);
+
+      &:hover {
+        border-color: var(--color-primary, #1890ff);
+        color: var(--color-primary, #1890ff);
+      }
+
+      &.ant-pagination-disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+
+    .ant-pagination-jump-prev,
+    .ant-pagination-jump-next {
+      .ant-pagination-item-container {
+        .ant-pagination-item-ellipsis,
+        .ant-pagination-item-link-icon {
+          color: var(--color-text-secondary, #666666);
+        }
+      }
+    }
+
+    .ant-pagination-options {
+      .ant-pagination-options-size-changer {
+        .ant-select-selector {
+          border-radius: var(--border-radius-base, 6px);
+          border: 1px solid var(--color-border, #d9d9d9);
+          background-color: var(--color-bg-base, #ffffff);
+          color: var(--color-text, #000000);
+        }
+      }
+    }
+  }
+
+  /* Empty state */
+  .ant-empty {
+    margin: var(--spacing-xl, 48px) 0;
+    color: var(--color-text-secondary, #666666);
+
+    .ant-empty-description {
+      color: var(--color-text-secondary, #666666);
+    }
+  }
+
+  /* Loading state */
+  .ant-spin-container {
+    position: relative;
+  }
+
+  .ant-spin-blur {
+    opacity: 0.7;
+    transition: opacity var(--transition-base, 0.3s ease);
+  }
+
+  /* Summary row */
+  .ant-table-summary {
+    background-color: var(--color-bg-secondary, #fafafa);
+    border-top: 2px solid var(--color-border, #f0f0f0);
+
+    > tr > td {
+      font-weight: 600;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--color-border-light, #f0f0f0);
+    }
+  }
+
+  /* Fixed header/columns */
+  .ant-table-header {
+    overflow: hidden;
+
+    > table {
+      border-radius: var(--border-radius-base, 8px) var(--border-radius-base, 8px) 0 0;
+    }
+  }
+
+  .ant-table-fixed-header > .ant-table-content > .ant-table-scroll > .ant-table-body {
+    border-radius: 0 0 var(--border-radius-base, 8px) var(--border-radius-base, 8px);
+  }
+
+  .ant-table-fixed-left,
+  .ant-table-fixed-right {
+    .ant-table-thead > tr > th {
+      background-color: var(--color-bg-secondary, #fafafa);
+    }
+  }
+
+  /* Dark theme */
+  [data-theme='dark'] & {
+    background-color: var(--color-bg-base-dark, #1f1f1f);
+
+    .ant-table {
+      background-color: var(--color-bg-base-dark, #1f1f1f);
+      color: var(--color-text-dark, #ffffff);
+    }
+
+    .ant-table-thead > tr > th {
+      background-color: var(--color-bg-secondary-dark, #262626);
+      color: var(--color-text-secondary-dark, #a6a6a6);
+      border-bottom-color: var(--color-border-dark, #303030);
+    }
+
+    .ant-table-tbody > tr {
+      &:hover > td {
+        background-color: var(--color-bg-hover-dark, #262626);
+      }
+
+      &.ant-table-row-selected > td {
+        background-color: rgba(23, 125, 220, 0.15);
+      }
+
+      &.ant-table-row-selected:hover > td {
+        background-color: rgba(23, 125, 220, 0.2);
+      }
+
+      > td {
+        border-bottom-color: var(--color-border-dark, #303030);
+        color: var(--color-text-dark, #ffffff);
+      }
+    }
+
+    .ant-table-summary {
+      background-color: var(--color-bg-secondary-dark, #262626);
+      border-top-color: var(--color-border-dark, #303030);
+
+      > tr > td {
+        border-bottom-color: var(--color-border-dark, #303030);
+      }
+    }
+
+    .ant-table-column-sorter {
+      color: var(--color-text-secondary-dark, #a6a6a6);
+
+      &:hover {
+        color: var(--color-text-dark, #ffffff);
+      }
+    }
+
+    .ant-table-filter-trigger {
+      color: var(--color-text-secondary-dark, #a6a6a6);
+
+      &:hover {
+        background-color: var(--color-bg-hover-dark, #262626);
+        color: var(--color-text-dark, #ffffff);
+      }
+
+      &.active {
+        color: var(--color-primary-dark, #177ddc);
+        background-color: rgba(23, 125, 220, 0.15);
+      }
+    }
+
+    .ant-table-row-expand-icon {
+      color: var(--color-text-secondary-dark, #a6a6a6);
+      border-color: var(--color-border-dark, #434343);
+      background-color: var(--color-bg-base-dark, #1f1f1f);
+    }
+
+    .ant-empty {
+      color: var(--color-text-secondary-dark, #a6a6a6);
+
+      .ant-empty-description {
+        color: var(--color-text-secondary-dark, #a6a6a6);
+      }
+    }
+
+    .ant-pagination {
+      .ant-pagination-item {
+        border-color: var(--color-border-dark, #434343);
+        background-color: var(--color-bg-base-dark, #1f1f1f);
+        color: var(--color-text-dark, #ffffff);
+
+        &:hover {
+          border-color: var(--color-primary-dark, #177ddc);
+
+          a {
+            color: var(--color-primary-dark, #177ddc);
+          }
+        }
+
+        &.ant-pagination-item-active {
+          border-color: var(--color-primary-dark, #177ddc);
+          background-color: var(--color-primary-dark, #177ddc);
+
+          a {
+            color: var(--color-text-on-primary-dark, #000000);
+          }
+        }
+      }
+
+      .ant-pagination-prev,
+      .ant-pagination-next {
+        border-color: var(--color-border-dark, #434343);
+        background-color: var(--color-bg-base-dark, #1f1f1f);
+        color: var(--color-text-dark, #ffffff);
+      }
+    }
+  }
+
+  /* High contrast theme */
+  [data-theme='high-contrast'] & {
+    .ant-table-thead > tr > th {
+      font-weight: 700;
+      border-bottom-width: 3px;
+    }
+
+    .ant-table-tbody > tr > td {
+      border-bottom-width: 2px;
+    }
+
+    .ant-pagination-item {
+      border-width: 2px;
+
+      &.ant-pagination-item-active {
+        border-width: 3px;
+      }
+    }
+  }
+
+  /* Mobile responsive */
+  @media (max-width: 768px) {
+    .ant-table {
+      font-size: 13px;
+    }
+
+    .ant-table-thead > tr > th {
+      padding: 8px 12px;
+      font-size: 12px;
+    }
+
+    .ant-table-tbody > tr > td {
+      padding: 8px 12px;
+      font-size: 13px;
+    }
+
+    .ant-pagination {
+      text-align: center;
+
+      .ant-pagination-options {
+        margin-left: 0;
+        margin-top: var(--spacing-md, 16px);
+      }
+    }
+
+    /* Stack mobile layout */
+    &.custom-table--stack {
+      .ant-table-thead {
+        display: none;
+      }
+
+      .ant-table-tbody > tr {
+        display: block;
+        margin-bottom: var(--spacing-md, 16px);
+        border: 1px solid var(--color-border, #f0f0f0);
+        border-radius: var(--border-radius-base, 8px);
+        overflow: hidden;
+
+        > td {
+          display: block;
+          text-align: left;
+          border-bottom: 1px solid var(--color-border-light, #f0f0f0);
+          padding: 8px 12px;
+
+          &:last-child {
+            border-bottom: none;
+          }
+
+          &::before {
+            content: attr(data-label);
+            display: inline-block;
+            font-weight: 600;
+            margin-right: var(--spacing-sm, 8px);
+            color: var(--color-text-secondary, #666666);
+          }
+        }
+      }
+    }
+  }
+
+  /* Print styles */
+  @media print {
+    .ant-pagination {
+      display: none;
+    }
+
+    .ant-table-thead > tr > th,
+    .ant-table-tbody > tr > td {
+      border-color: #000000;
+    }
+  }
+}
+
+/* Loading overlay */
+.custom-table-loading {
+  position: relative;
+
+  .ant-spin-container {
+    opacity: 0.5;
+  }
+
+  .ant-spin-blur {
+    pointer-events: none;
+  }
+}
+
+/* Empty state enhancements */
+.custom-table-empty {
+  text-align: center;
+  padding: var(--spacing-xl, 48px) var(--spacing-lg, 24px);
+
+  .ant-empty-image {
+    margin-bottom: var(--spacing-md, 16px);
+  }
+
+  .ant-empty-description {
+    font-size: 14px;
+    color: var(--color-text-secondary, #666666);
+    margin-bottom: var(--spacing-lg, 24px);
+  }
+
+  .custom-table-empty-actions {
+    .ant-btn {
+      margin: 0 var(--spacing-xs, 4px);
+    }
+  }
+}
