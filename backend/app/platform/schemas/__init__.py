@@ -1,0 +1,242 @@
+"""Platform schemas package.
+
+This package contains Pydantic models for validating platform operations,
+WebSocket messages, and notification configurations.
+"""
+
+from .platform_operations import (
+    # Enums
+    PlatformType,
+    AuthType,
+    DeploymentStatus,
+    IssueSeverity,
+    IssueType,
+    # Platform Schemas
+    PlatformCreateRequest,
+    PlatformUpdateRequest,
+    PlatformResponse,
+    PlatformHealthCheckRequest,
+    PlatformHealthStatus,
+    # Deployment Schemas
+    DeploymentCreateRequest,
+    DeploymentUpdateRequest,
+    DeploymentResponse,
+    DeploymentRetryRequest,
+    # Compatibility Schemas
+    CompatibilityCheckRequest,
+    CompatibilityIssue,
+    CompatibilityWarning,
+    CompatibilityRecommendation,
+    PlatformCompatibilityResult,
+    CompatibilityCheckResponse,
+    CompatibilitySummary,
+    # List and Filter Schemas
+    PlatformListRequest,
+    DeploymentListRequest,
+    CompatibilityListRequest,
+    # Error Schemas
+    PlatformError,
+    DeploymentError,
+    CompatibilityError,
+    # Bulk Operation Schemas
+    BulkDeploymentRequest,
+    BulkCompatibilityCheckRequest,
+)
+
+from .notification_config import (
+    # Enums
+    NotificationType,
+    NotificationPriority,
+    DeliveryChannel,
+    DeliveryStatus,
+    # Configuration Schemas
+    NotificationConfigCreateRequest,
+    NotificationConfigUpdateRequest,
+    NotificationConfigResponse,
+    # Delivery Schemas
+    NotificationDeliveryRequest,
+    NotificationDeliveryResponse,
+    NotificationStatusRequest,
+    NotificationStatusResponse,
+    # Channel Configuration Schemas
+    EmailChannelConfig,
+    WebhookChannelConfig,
+    SlackChannelConfig,
+    DiscordChannelConfig,
+    # Template Schemas
+    NotificationTemplate,
+    TemplateRenderRequest,
+    TemplateRenderResponse,
+    # Subscription Schemas
+    NotificationSubscription,
+    SubscriptionCreateRequest,
+    SubscriptionUpdateRequest,
+    SubscriptionResponse,
+    # Event-Triggered Notification Schemas
+    NotificationRule,
+    RuleCreateRequest,
+    RuleUpdateRequest,
+    RuleResponse,
+    # Analytics and Monitoring Schemas
+    NotificationAnalytics,
+    NotificationMetricsRequest,
+    NotificationMetricsResponse,
+    # Bulk Operations Schemas
+    BulkNotificationRequest,
+    BulkSubscriptionRequest,
+    # List and Filter Schemas
+    NotificationListRequest,
+    SubscriptionListRequest,
+    RuleListRequest,
+    # Error Schemas
+    NotificationError,
+    TemplateError,
+)
+
+from .websocket_messages import (
+    # Enums
+    MessageType,
+    MessagePriority,
+    ConnectionStatus,
+    # Core Message Schemas
+    WebSocketMessage,
+    MessageAcknowledgment,
+    # Platform Message Schemas
+    PlatformStatusUpdate,
+    PlatformHealthCheckRequest,
+    PlatformHealthCheckResponse,
+    PlatformConfigUpdate,
+    # Deployment Message Schemas
+    DeploymentStatusUpdate,
+    DeploymentStarted,
+    DeploymentProgress,
+    DeploymentCompleted,
+    DeploymentFailed,
+    DeploymentRetry,
+    # Compatibility Check Message Schemas
+    CompatibilityCheckStarted,
+    CompatibilityCheckProgress,
+    CompatibilityCheckCompleted,
+    CompatibilityCheckFailed,
+    # Notification Message Schemas
+    NotificationSent,
+    NotificationDelivered,
+    NotificationFailed,
+    # System Message Schemas
+    HeartbeatMessage,
+    ErrorMessage,
+    SubscriptionUpdate,
+    BulkOperationUpdate,
+    # Connection Management Schemas
+    ConnectionRequest,
+    ConnectionResponse,
+    DisconnectionRequest,
+    # Message Routing Schemas
+    MessageRouting,
+    # Message Queue Schemas
+    MessageQueueStatus,
+    QueueStats,
+)
+
+__all__ = [
+    # Platform Operation Schemas
+    "PlatformType",
+    "AuthType",
+    "DeploymentStatus",
+    "IssueSeverity",
+    "IssueType",
+    "PlatformCreateRequest",
+    "PlatformUpdateRequest",
+    "PlatformResponse",
+    "PlatformHealthCheckRequest",
+    "PlatformHealthStatus",
+    "DeploymentCreateRequest",
+    "DeploymentUpdateRequest",
+    "DeploymentResponse",
+    "DeploymentRetryRequest",
+    "CompatibilityCheckRequest",
+    "CompatibilityIssue",
+    "CompatibilityWarning",
+    "CompatibilityRecommendation",
+    "PlatformCompatibilityResult",
+    "CompatibilityCheckResponse",
+    "CompatibilitySummary",
+    "PlatformListRequest",
+    "DeploymentListRequest",
+    "CompatibilityListRequest",
+    "PlatformError",
+    "DeploymentError",
+    "CompatibilityError",
+    "BulkDeploymentRequest",
+    "BulkCompatibilityCheckRequest",
+    # Notification Configuration Schemas
+    "NotificationType",
+    "NotificationPriority",
+    "DeliveryChannel",
+    "DeliveryStatus",
+    "NotificationConfigCreateRequest",
+    "NotificationConfigUpdateRequest",
+    "NotificationConfigResponse",
+    "NotificationDeliveryRequest",
+    "NotificationDeliveryResponse",
+    "NotificationStatusRequest",
+    "NotificationStatusResponse",
+    "EmailChannelConfig",
+    "WebhookChannelConfig",
+    "SlackChannelConfig",
+    "DiscordChannelConfig",
+    "NotificationTemplate",
+    "TemplateRenderRequest",
+    "TemplateRenderResponse",
+    "NotificationSubscription",
+    "SubscriptionCreateRequest",
+    "SubscriptionUpdateRequest",
+    "SubscriptionResponse",
+    "NotificationRule",
+    "RuleCreateRequest",
+    "RuleUpdateRequest",
+    "RuleResponse",
+    "NotificationAnalytics",
+    "NotificationMetricsRequest",
+    "NotificationMetricsResponse",
+    "BulkNotificationRequest",
+    "BulkSubscriptionRequest",
+    "NotificationListRequest",
+    "SubscriptionListRequest",
+    "RuleListRequest",
+    "NotificationError",
+    "TemplateError",
+    # WebSocket Message Schemas
+    "MessageType",
+    "MessagePriority",
+    "ConnectionStatus",
+    "WebSocketMessage",
+    "MessageAcknowledgment",
+    "PlatformStatusUpdate",
+    "PlatformHealthCheckRequest",
+    "PlatformHealthCheckResponse",
+    "PlatformConfigUpdate",
+    "DeploymentStatusUpdate",
+    "DeploymentStarted",
+    "DeploymentProgress",
+    "DeploymentCompleted",
+    "DeploymentFailed",
+    "DeploymentRetry",
+    "CompatibilityCheckStarted",
+    "CompatibilityCheckProgress",
+    "CompatibilityCheckCompleted",
+    "CompatibilityCheckFailed",
+    "NotificationSent",
+    "NotificationDelivered",
+    "NotificationFailed",
+    "HeartbeatMessage",
+    "ErrorMessage",
+    "SubscriptionUpdate",
+    "BulkOperationUpdate",
+    "ConnectionRequest",
+    "ConnectionResponse",
+    "DisconnectionRequest",
+    "MessageRouting",
+    "MessageQueueStatus",
+    "QueueStats",
+]
