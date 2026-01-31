@@ -1,0 +1,9 @@
+# Minimal requirements for Skill Management Center
+fastapi
+uvicorn
+pydantic
+pydantic-settings
+python-dateutil
+python-dotenv
+pytest
+pytest-asyncio

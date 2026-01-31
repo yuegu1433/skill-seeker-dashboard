@@ -28,76 +28,55 @@ from app.skill.schemas.skill_operations import (
     SkillBulkOperation,
 )
 from app.skill.schemas.skill_import import ImportRequest, ExportRequest
+from app.core.database import get_db_session
 
 router = APIRouter(prefix="/api/v1/skills", tags=["skills"])
 
 
 # Dependency injection for managers
-async def get_skill_manager() -> SkillManager:
-    """Get skill manager instance."""
-    # In a real application, this would be a database-backed instance
-    # For now, return a mock
-    from unittest.mock import Mock
-    manager = Mock(spec=SkillManager)
-    manager.create_skill = Mock(return_value=Mock(id="test-skill"))
-    manager.update_skill = Mock(return_value=Mock(id="test-skill"))
-    manager.get_skill = Mock(return_value=Mock(id="test-skill", name="Test Skill"))
-    manager.list_skills = Mock(return_value=Mock(
-        items=[Mock(id="skill1", name="Skill 1")],
-        total=1,
-        page=1,
-        page_size=20,
-    ))
-    manager.delete_skill = Mock(return_value=True)
-    manager.bulk_operation = Mock(return_value=Mock(
-        successful=5,
-        failed=0,
-        processed=5,
-    ))
-    return manager
+async def get_skill_manager(
+    session = Depends(get_db_session)
+) -> SkillManager:
+    """Get skill manager instance with database session."""
+    return SkillManager(session)
 
 
 async def get_event_manager() -> SkillEventManager:
     """Get event manager instance."""
-    from unittest.mock import Mock
-    manager = Mock(spec=SkillEventManager)
-    manager.publish_event = Mock(return_value="event_id")
-    return manager
+    return SkillEventManager()
 
 
-async def get_editor() -> SkillEditor:
+async def get_editor(
+    skill_manager: SkillManager = Depends(get_skill_manager),
+    event_manager: SkillEventManager = Depends(get_event_manager)
+) -> SkillEditor:
     """Get skill editor instance."""
-    from unittest.mock import Mock
-    editor = Mock(spec=SkillEditor)
-    editor.create_session = Mock(return_value="session123")
-    editor.close_session = Mock(return_value=True)
-    editor.get_session = Mock(return_value=Mock(files={}))
-    editor.open_file = Mock(return_value=Mock(file_id="file123", file_path="test.yaml"))
-    editor.close_file = Mock(return_value=True)
-    editor.save_file = Mock(return_value=True)
-    editor.update_content = Mock(return_value=True)
-    return editor
+    return SkillEditor(skill_manager, event_manager)
 
 
-async def get_version_manager() -> SkillVersionManager:
+async def get_version_manager(
+    skill_manager: SkillManager = Depends(get_skill_manager),
+    event_manager: SkillEventManager = Depends(get_event_manager)
+) -> SkillVersionManager:
     """Get version manager instance."""
-    from unittest.mock import Mock
-    manager = Mock(spec=SkillVersionManager)
-    manager.create_version = Mock(return_value=Mock(
-        commit_id="commit123",
-        version="1.0.0",
-    ))
-    manager.tag_version = Mock(return_value=Mock(
-        name="v1.0.0",
-        version="1.0.0",
-    ))
-    manager.create_branch = Mock(return_value=Mock(
-        name="feature/test",
-        version="1.0.0",
-    ))
-    manager.compare_versions = Mock(return_value=Mock(
-        from_version="1.0.0",
-        to_version="1.1.0",
+    return SkillVersionManager(skill_manager, event_manager)
+
+
+async def get_importer(
+    skill_manager: SkillManager = Depends(get_skill_manager),
+    event_manager: SkillEventManager = Depends(get_event_manager)
+) -> SkillImporter:
+    """Get skill importer instance."""
+    workspace_path = PathLib("/tmp/skill-workspace")
+    return SkillImporter(skill_manager, event_manager, workspace_path)
+
+
+async def get_analytics(
+    skill_manager: SkillManager = Depends(get_skill_manager),
+    event_manager: SkillEventManager = Depends(get_event_manager)
+) -> SkillAnalytics:
+    """Get analytics instance."""
+    return SkillAnalytics(skill_manager, event_manager)
         summary={"added_lines": 5},
     ))
     manager.rollback_version = Mock(return_value=True)

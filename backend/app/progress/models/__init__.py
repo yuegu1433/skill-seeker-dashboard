@@ -9,6 +9,7 @@ from .task import TaskProgress, Base
 from .log import TaskLog
 from .notification import Notification
 from .metric import ProgressMetric
+from .enums import TaskStatus, LogLevel, NotificationType, NotificationPriority
 
 __all__ = [
     "Base",
@@ -16,4 +17,8 @@ __all__ = [
     "TaskLog",
     "Notification",
     "ProgressMetric",
+    "TaskStatus",
+    "LogLevel",
+    "NotificationType",
+    "NotificationPriority",
 ]
