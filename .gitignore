@@ -72,3 +72,12 @@ USER_EXPERIENCE_SIMPLIFICATION_COMPLETION_REPORT.md
 docs/component-library.md
 docs/frontend-development-guide.md
 docs/testing-guide.md
+frontend/node_modules/
+backend.log
+frontend.log
+SERVICES_STATUS.md
+services_stopped.txt
+backend/backend.log
+backend/complete_backend.log
+backend/no_auth_backend.log
+backend/simple_backend.log
