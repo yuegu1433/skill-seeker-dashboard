@@ -20,7 +20,7 @@
 
 .skill-create-wizard .step-indicator::after {
   content: '';
-  @apply absolute top-5 left-1/2 w-full h-0.5 bg-gray-200 -z-10;
+  @apply absolute top-5 left-1/2 w-full h-0.5 bg-gray-200 z-0;
 }
 
 .skill-create-wizard .step-indicator:last-child::after {

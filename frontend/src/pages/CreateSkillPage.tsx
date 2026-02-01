@@ -18,43 +18,43 @@ const CreateSkillPage: React.FC = () => {
       <div className="card">
         <div className="card-body">
           <div className="mb-8">
-            <nav aria-label="进度">
-              <ol className="flex items-center justify-center">
-                <li className="relative flex-1 flex items-center">
-                  <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary-600 text-white">
+            <nav aria-label="进度" className="relative">
+              <ol className="flex items-center justify-between">
+                {/* Progress Line */}
+                <div className="absolute top-5 left-5 right-5 h-0.5 bg-gray-200 -z-10"></div>
+
+                <li className="relative flex flex-col items-center text-center min-w-0 flex-1">
+                  <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary-600 text-white border-4 border-white shadow-sm">
                     <span className="text-sm font-semibold">1</span>
                   </div>
-                  <div className="ml-4 text-sm font-medium text-primary-600">
+                  <div className="mt-2 text-sm font-medium text-primary-600 px-2 truncate w-full">
                     基本信息
                   </div>
-                  <div className="hidden sm:block absolute top-0 left-1/2 w-32 h-0.5 bg-primary-200 transform -translate-x-1/2 mt-5"></div>
                 </li>
 
-                <li className="relative flex-1 flex items-center">
-                  <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-300 text-white">
+                <li className="relative flex flex-col items-center text-center min-w-0 flex-1">
+                  <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-300 text-white border-4 border-white shadow-sm">
                     <span className="text-sm font-semibold">2</span>
                   </div>
-                  <div className="ml-4 text-sm font-medium text-gray-500">
+                  <div className="mt-2 text-sm font-medium text-gray-500 px-2 truncate w-full">
                     源选择
                   </div>
-                  <div className="hidden sm:block absolute top-0 left-1/2 w-32 h-0.5 bg-gray-200 transform -translate-x-1/2 mt-5"></div>
                 </li>
 
-                <li className="relative flex-1 flex items-center">
-                  <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-300 text-white">
+                <li className="relative flex flex-col items-center text-center min-w-0 flex-1">
+                  <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-300 text-white border-4 border-white shadow-sm">
                     <span className="text-sm font-semibold">3</span>
                   </div>
-                  <div className="ml-4 text-sm font-medium text-gray-500">
+                  <div className="mt-2 text-sm font-medium text-gray-500 px-2 truncate w-full">
                     高级配置
                   </div>
-                  <div className="hidden sm:block absolute top-0 left-1/2 w-32 h-0.5 bg-gray-200 transform -translate-x-1/2 mt-5"></div>
                 </li>
 
-                <li className="relative flex-1 flex items-center">
-                  <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-300 text-white">
+                <li className="relative flex flex-col items-center text-center min-w-0 flex-1">
+                  <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-300 text-white border-4 border-white shadow-sm">
                     <span className="text-sm font-semibold">4</span>
                   </div>
-                  <div className="ml-4 text-sm font-medium text-gray-500">
+                  <div className="mt-2 text-sm font-medium text-gray-500 px-2 truncate w-full">
                     确认
                   </div>
                 </li>
