@@ -81,3 +81,4 @@ backend/backend.log
 backend/complete_backend.log
 backend/no_auth_backend.log
 backend/simple_backend.log
+FRONTEND_INTERFACE_SYSTEM_SPECIFICATION.md
