@@ -1,8 +1,9 @@
-"""Button UI Component.
-
-This module provides a customizable button component based on Ant Design,
-with support for different variants, sizes, and states.
-"""
+/**
+ * Button UI Component.
+ *
+ * This module provides a customizable button component based on Ant Design,
+ * with support for different variants, sizes, and states.
+ */
 
 import React from 'react';
 import { Button as AntButton, ButtonProps as AntButtonProps } from 'antd';

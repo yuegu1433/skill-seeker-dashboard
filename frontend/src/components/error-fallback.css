@@ -1,0 +1,221 @@
+/* Error Fallback Styles */
+
+.error-fallback {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+}
+
+.error-fallback__container {
+  max-width: 800px;
+  width: 100%;
+  text-align: center;
+  padding: 48px 32px;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.error-fallback__icon {
+  font-size: 64px;
+  margin-bottom: 24px;
+}
+
+.error-fallback__title {
+  font-size: 32px;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+  color: var(--color-error);
+}
+
+.error-fallback__description {
+  font-size: 16px;
+  color: var(--color-text-secondary);
+  margin: 0 0 32px 0;
+  line-height: 1.6;
+}
+
+.error-fallback__error-code {
+  margin: 0 0 32px 0;
+  padding: 16px;
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: 8px;
+  font-family: 'JetBrains Mono', 'Consolas', monospace;
+  font-size: 14px;
+  color: var(--color-error);
+  word-break: break-word;
+}
+
+.error-fallback__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin: 0 0 24px 0;
+}
+
+.error-fallback__btn {
+  padding: 12px 24px;
+  border: 1px solid var(--color-border-primary);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+}
+
+.error-fallback__btn:hover {
+  background: var(--color-bg-hover);
+  border-color: var(--color-primary);
+}
+
+.error-fallback__btn--primary {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+.error-fallback__btn--primary:hover {
+  background: var(--color-primary-hover);
+}
+
+.error-fallback__btn--secondary {
+  background: var(--color-bg-secondary);
+}
+
+.error-fallback__toggle-details {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.error-fallback__toggle-details:hover {
+  background: var(--color-bg-hover);
+}
+
+.error-fallback__details {
+  margin-top: 32px;
+  text-align: left;
+  padding: 24px;
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: 8px;
+}
+
+.error-fallback__section {
+  margin-bottom: 24px;
+}
+
+.error-fallback__section:last-child {
+  margin-bottom: 0;
+}
+
+.error-fallback__section h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 12px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.error-fallback__code {
+  margin: 0;
+  padding: 12px;
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: 6px;
+  font-family: 'JetBrains Mono', 'Consolas', monospace;
+  font-size: 13px;
+  color: var(--color-text-primary);
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.error-fallback__code--scrollable {
+  overflow-y: auto;
+  max-height: 300px;
+}
+
+.error-fallback__info {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.error-fallback__info li {
+  padding: 8px 0;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  border-bottom: 1px solid var(--color-border-primary);
+}
+
+.error-fallback__info li:last-child {
+  border-bottom: none;
+}
+
+.error-fallback__info strong {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .error-fallback__container {
+    padding: 32px 24px;
+  }
+
+  .error-fallback__title {
+    font-size: 24px;
+  }
+
+  .error-fallback__description {
+    font-size: 14px;
+  }
+
+  .error-fallback__actions {
+    flex-direction: column;
+  }
+
+  .error-fallback__btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.error-fallback__container {
+  animation: fadeIn 0.3s ease-out;
+}

@@ -1,0 +1,40 @@
+/* Auto Save Indicator Styles */
+
+.auto-save-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.auto-save-indicator__icon {
+  font-size: 14px;
+}
+
+.auto-save-indicator__text {
+  white-space: nowrap;
+}
+
+.auto-save-indicator--disabled {
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-secondary);
+}
+
+.auto-save-indicator--saving {
+  background: var(--color-primary-bg);
+  color: var(--color-primary);
+}
+
+.auto-save-indicator--saved {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.auto-save-indicator--idle {
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-secondary);
+}

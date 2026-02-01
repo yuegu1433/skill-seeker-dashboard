@@ -1,7 +1,8 @@
 /**
- * Playwright E2E测试配置
+ * Playwright E2E Test Configuration
  *
- * 配置Playwright测试框架，支持多浏览器测试、报告生成、截图等功能
+ * Configures Playwright test framework with multi-browser support,
+ * report generation, screenshots, and accessibility testing
  */
 
 import { defineConfig, devices } from '@playwright/test';
@@ -9,113 +10,103 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testDir: './tests/e2e',
 
-  // 并行测试配置
+  // Parallel test configuration
   fullyParallel: true,
 
-  // 失败重试配置
+  // Failure retry configuration
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
 
-  // 报告器配置
+  // Reporter configuration
   reporter: [
-    ['html'],
+    ['html', { open: 'never' }],
     ['json', { outputFile: 'test-results/results.json' }],
     ['junit', { outputFile: 'test-results/results.xml' }],
   ],
 
-  // 测试全局设置
+  // Global test settings
   use: {
-    // 基础URL
-    baseURL: 'http://localhost:3000',
+    // Base URL
+    baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:4173',
 
-    // 测试超时
+    // Timeouts
     actionTimeout: 30000,
     navigationTimeout: 30000,
 
-    // 跟踪配置
+    // Trace configuration
     trace: 'on-first-retry',
 
-    // 截图配置
+    // Screenshot configuration
     screenshot: 'only-on-failure',
 
-    // 视频配置
+    // Video configuration
     video: 'retain-on-failure',
 
-    // 测试数据目录
+    // Test data directory
     testIdAttribute: 'data-testid',
   },
 
-  // 项目配置 - 支持多浏览器
+  // Project configuration - Multi-browser support
   projects: [
-    // Chromium - 桌面端
+    // Desktop browsers
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
-
-    // Firefox - 桌面端
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
     },
-
-    // Safari - 桌面端（仅macOS）
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
     },
 
-    // 移动端 - iPhone
+    // Mobile browsers
     {
       name: 'iPhone 13',
       use: { ...devices['iPhone 13'] },
     },
-
-    // 移动端 - Android
     {
       name: 'Samsung Galaxy S21',
       use: { ...devices['Samsung Galaxy S21'] },
     },
 
-    // 平板端 - iPad
+    // Tablet
     {
       name: 'iPad Pro',
       use: { ...devices['iPad Pro'] },
     },
   ],
 
-  // 开发服务器配置
-  webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI,
-    timeout: 120 * 1000,
-  },
+  // Development server configuration
+  webServer: process.env.CI
+    ? undefined
+    : {
+        command: 'npm run preview',
+        url: 'http://localhost:4173',
+        reuseExistingServer: !process.env.CI,
+        timeout: 120 * 1000,
+      },
 
-  // 输出配置
+  // Output directory
   outputDir: 'test-results/',
 
-  // 全局测试钩子
-  globalSetup: require.resolve('./tests/utils/global-setup.ts'),
-  globalTeardown: require.resolve('./tests/utils/global-teardown.ts'),
+  // Global hooks
+  globalSetup: require.resolve('./tests/setup.ts'),
 
-  // 测试超时
+  // Test timeout
   timeout: 60 * 1000,
 
-  // 期望匹配器配置
+  // Expect matcher configuration
   expect: {
-    // 截图期望超时
     toHaveScreenshot: {
       maxDiffPixelRatio: 0.1,
     },
-
-    // 文本期望超时
     toHaveText: {
       timeout: 5000,
     },
-
-    // URL期望超时
     toHaveURL: {
       timeout: 5000,
     },

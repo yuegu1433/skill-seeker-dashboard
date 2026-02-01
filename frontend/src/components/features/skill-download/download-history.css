@@ -1,0 +1,122 @@
+/* Download History Styles */
+
+.download-history {
+  padding: 8px;
+}
+
+.download-history__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+.download-history__list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.download-history__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.download-history__item:hover {
+  border-color: var(--color-border-primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.download-history__icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.download-history__details {
+  flex: 1;
+  min-width: 0;
+}
+
+.download-history__name {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.download-history__meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.download-history__platform {
+  font-weight: 500;
+}
+
+.download-history__separator {
+  opacity: 0.5;
+}
+
+.download-history__date {
+  font-size: 11px;
+}
+
+.download-history__error {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--color-error);
+}
+
+.download-history__actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.download-history__btn {
+  width: 32px;
+  height: 32px;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.download-history__btn:hover {
+  background: var(--color-bg-hover);
+  border-color: var(--color-primary);
+}
+
+/* Status-specific styles */
+.download-history__item--completed .download-history__name {
+  color: var(--color-success);
+}
+
+.download-history__item--failed .download-history__name {
+  color: var(--color-error);
+}
+
+.download-history__item--canceled .download-history__name {
+  color: var(--color-text-secondary);
+}

@@ -1,8 +1,9 @@
-"""Modal UI Component.
-
-This module provides a customizable modal component based on Ant Design,
-with support for different sizes, animations, and accessibility features.
-"""
+/**
+ * Modal UI Component.
+ *
+ * This module provides a customizable modal component based on Ant Design,
+ * with support for different sizes, animations, and accessibility features.
+ */
 
 import React, { useEffect, useRef } from 'react';
 import { Modal as AntModal, ModalProps as AntModalProps } from 'antd';

@@ -1,0 +1,290 @@
+/* SkillCreateWizard Component Styles */
+
+.skill-create-wizard {
+  @apply w-full;
+}
+
+/* Progress Bar Enhancements */
+.skill-create-wizard .progress-bar {
+  @apply relative bg-gray-200 rounded-full overflow-hidden;
+}
+
+.skill-create-wizard .progress-fill {
+  @apply bg-primary-600 h-full transition-all duration-300 ease-out;
+}
+
+/* Step Navigation */
+.skill-create-wizard .step-indicator {
+  @apply relative flex items-center justify-center;
+}
+
+.skill-create-wizard .step-indicator::after {
+  content: '';
+  @apply absolute top-5 left-1/2 w-full h-0.5 bg-gray-200 -z-10;
+}
+
+.skill-create-wizard .step-indicator:last-child::after {
+  @apply hidden;
+}
+
+.skill-create-wizard .step-indicator.active::after {
+  @apply bg-primary-600;
+}
+
+/* Form Sections */
+.skill-create-wizard .form-section {
+  @apply space-y-6;
+}
+
+.skill-create-wizard .form-section-title {
+  @apply text-lg font-medium text-gray-900 border-b border-gray-200 pb-2;
+}
+
+/* Platform Cards */
+.skill-create-wizard .platform-card {
+  @apply relative flex cursor-pointer rounded-lg border p-4 transition-all;
+}
+
+.skill-create-wizard .platform-card:hover {
+  @apply border-primary-400 shadow-md;
+}
+
+.skill-create-wizard .platform-card.selected {
+  @apply border-primary-600 ring-2 ring-primary-600 bg-primary-50;
+}
+
+/* Source Type Cards */
+.skill-create-wizard .source-type-card {
+  @apply relative flex flex-col items-center text-center cursor-pointer rounded-lg border p-6 transition-all;
+}
+
+.skill-create-wizard .source-type-card:hover {
+  @apply border-primary-400 shadow-md;
+}
+
+.skill-create-wizard .source-type-card.selected {
+  @apply border-primary-600 ring-2 ring-primary-600 bg-primary-50;
+}
+
+/* Tag Input */
+.skill-create-wizard .tag-input {
+  @apply flex items-center px-3 py-1.5 rounded-full text-sm bg-primary-100 text-primary-800;
+}
+
+.skill-create-wizard .tag-remove {
+  @apply ml-2 text-primary-600 hover:text-primary-800 cursor-pointer focus:outline-none;
+}
+
+/* File Upload Area */
+.skill-create-wizard .file-upload-area {
+  @apply border-2 border-dashed border-gray-300 rounded-lg p-6 text-center transition-colors;
+}
+
+.skill-create-wizard .file-upload-area:hover {
+  @apply border-primary-400 bg-primary-50;
+}
+
+.skill-create-wizard .file-upload-area.drag-over {
+  @apply border-primary-600 bg-primary-100;
+}
+
+/* Configuration Preview */
+.skill-create-wizard .config-preview {
+  @apply bg-gray-50 border border-gray-200 rounded-lg p-4 overflow-auto;
+}
+
+.skill-create-wizard .config-preview pre {
+  @apply text-sm text-gray-700 font-mono;
+}
+
+/* Summary Card */
+.skill-create-wizard .summary-card {
+  @apply bg-white border border-gray-200 rounded-lg p-6 space-y-4;
+}
+
+/* Confirmation Summary */
+.skill-create-wizard .confirmation-summary {
+  @apply space-y-6;
+}
+
+.skill-create-wizard .confirmation-section {
+  @apply space-y-2;
+}
+
+.skill-create-wizard .confirmation-section h4 {
+  @apply text-sm font-medium text-gray-900 border-b pb-2;
+}
+
+.skill-create-wizard .confirmation-item {
+  @apply flex justify-between items-start;
+}
+
+.skill-create-wizard .confirmation-label {
+  @apply text-sm font-medium text-gray-500;
+}
+
+.skill-create-wizard .confirmation-value {
+  @apply text-sm text-gray-900;
+}
+
+/* Validation Errors */
+.skill-create-wizard .field-error {
+  @apply text-sm text-red-600 mt-1;
+}
+
+.skill-create-wizard .field-group-error {
+  @apply border border-red-300 rounded-md;
+}
+
+/* Success Message */
+.skill-create-wizard .success-message {
+  @apply bg-green-50 border border-green-200 rounded-lg p-4;
+}
+
+.skill-create-wizard .success-message svg {
+  @apply w-5 h-5 text-green-600;
+}
+
+/* Warning Message */
+.skill-create-wizard .warning-message {
+  @apply bg-yellow-50 border border-yellow-200 rounded-lg p-4;
+}
+
+.skill-create-wizard .warning-message svg {
+  @apply w-5 h-5 text-yellow-600;
+}
+
+/* Info Message */
+.skill-create-wizard .info-message {
+  @apply bg-blue-50 border border-blue-200 rounded-lg p-4;
+}
+
+.skill-create-wizard .info-message svg {
+  @apply w-5 h-5 text-blue-600;
+}
+
+/* Loading States */
+.skill-create-wizard .loading-overlay {
+  @apply absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-10;
+}
+
+.skill-create-wizard .spinner {
+  @apply animate-spin rounded-full border-4 border-primary-200 border-t-primary-600;
+}
+
+/* Animations */
+.skill-create-wizard .step-enter {
+  @apply opacity-0 transform translate-x-4;
+}
+
+.skill-create-wizard .step-enter-active {
+  @apply opacity-100 transform translate-x-0 transition-all duration-300 ease-out;
+}
+
+.skill-create-wizard .step-exit {
+  @apply opacity-100 transform translate-x-0;
+}
+
+.skill-create-wizard .step-exit-active {
+  @apply opacity-0 transform -translate-x-4 transition-all duration-300 ease-in;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .skill-create-wizard {
+    @apply px-4;
+  }
+
+  .skill-create-wizard .platform-grid,
+  .skill-create-wizard .source-type-grid {
+    @apply grid-cols-1;
+  }
+
+  .skill-create-wizard .form-section {
+    @apply space-y-4;
+  }
+
+  .skill-create-wizard .summary-card {
+    @apply p-4;
+  }
+
+  .skill-create-wizard .confirmation-section h4 {
+    @apply text-sm;
+  }
+
+  .skill-create-wizard .confirmation-item {
+    @apply flex-col;
+  }
+
+  .skill-create-wizard .confirmation-label {
+    @apply mb-1;
+  }
+}
+
+@media (min-width: 768px) {
+  .skill-create-wizard .platform-grid {
+    @apply grid-cols-2;
+  }
+
+  .skill-create-wizard .source-type-grid {
+    @apply grid-cols-3;
+  }
+
+  .skill-create-wizard .form-grid {
+    @apply grid-cols-2 gap-4;
+  }
+}
+
+/* Focus States */
+.skill-create-wizard .focus-visible {
+  @apply outline-none ring-2 ring-primary-500 ring-offset-2;
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .skill-create-wizard .platform-card,
+  .skill-create-wizard .source-type-card {
+    @apply border-2 border-gray-900;
+  }
+
+  .skill-create-wizard .platform-card.selected,
+  .skill-create-wizard .source-type-card.selected {
+    @apply border-primary-900 ring-2 ring-primary-900;
+  }
+
+  .skill-create-wizard .field-error {
+    @apply border border-red-600;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .skill-create-wizard .progress-fill,
+  .skill-create-wizard .step-enter-active,
+  .skill-create-wizard .step-exit-active,
+  .skill-create-wizard .platform-card,
+  .skill-create-wizard .source-type-card {
+    @apply transition-none;
+  }
+
+  .skill-create-wizard .spinner {
+    @apply animate-none;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .skill-create-wizard .navigation-buttons,
+  .skill-create-wizard .file-upload-area,
+  .skill-create-wizard .loading-overlay {
+    @apply hidden;
+  }
+
+  .skill-create-wizard {
+    @apply text-black bg-white;
+  }
+
+  .skill-create-wizard .confirmation-summary {
+    @apply break-inside-avoid;
+  }
+}

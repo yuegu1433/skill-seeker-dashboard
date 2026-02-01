@@ -1,0 +1,179 @@
+/**
+ * SkillCard Component Styles
+ *
+ * Additional styles for the SkillCard component that complement Tailwind CSS.
+ */
+
+/* Skill Card Hover Effects */
+.skill-card {
+  @apply transition-all duration-200 ease-in-out;
+}
+
+.skill-card:hover {
+  @apply transform -translate-y-1;
+}
+
+.skill-card.selected {
+  @apply ring-2 ring-primary-500 shadow-lg;
+}
+
+/* Platform-specific animations */
+@keyframes platform-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.skill-card-platform-icon {
+  animation: platform-pulse 2s ease-in-out infinite;
+}
+
+/* Status transition effects */
+.skill-card-status-badge {
+  @apply transition-all duration-200;
+}
+
+.skill-card-status-badge:hover {
+  @apply scale-105;
+}
+
+/* Progress bar animation */
+@keyframes progress-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skill-card-progress-animated {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: progress-shimmer 1.5s infinite;
+}
+
+/* Tag animations */
+.skill-card-tag {
+  @apply transition-all duration-150;
+}
+
+.skill-card-tag:hover {
+  @apply scale-105 shadow-sm;
+}
+
+/* Action buttons hover effects */
+.skill-card-action-button {
+  @apply transition-all duration-150;
+}
+
+.skill-card-action-button:hover {
+  @apply scale-110 bg-gray-100;
+}
+
+/* List view specific styles */
+.skill-card-list-view {
+  @apply flex items-center space-x-4 p-4;
+}
+
+.skill-card-list-view .skill-card-header {
+  @apply flex-row items-center space-x-4;
+}
+
+.skill-card-list-view .skill-card-content {
+  @apply flex-1 min-w-0;
+}
+
+.skill-card-list-view .skill-card-actions {
+  @apply flex items-center space-x-2;
+}
+
+/* Grid view specific styles */
+.skill-card-grid-view {
+  @apply max-w-sm;
+}
+
+/* Platform color utilities */
+.skill-card-platform-claude {
+  @apply border-l-4;
+  border-left-color: #D97706;
+}
+
+.skill-card-platform-gemini {
+  @apply border-l-4;
+  border-left-color: #1A73E8;
+}
+
+.skill-card-platform-openai {
+  @apply border-l-4;
+  border-left-color: #10A37F;
+}
+
+.skill-card-platform-markdown {
+  @apply border-l-4;
+  border-left-color: #6B7280;
+}
+
+/* Loading skeleton styles */
+.skill-card-skeleton {
+  @apply animate-pulse;
+}
+
+.skill-card-skeleton-text {
+  @apply h-4 bg-gray-200 rounded w-3/4;
+}
+
+.skill-card-skeleton-text-short {
+  @apply h-4 bg-gray-200 rounded w-1/2;
+}
+
+.skill-card-skeleton-badge {
+  @apply h-6 bg-gray-200 rounded-full w-20;
+}
+
+.skill-card-skeleton-progress {
+  @apply h-2 bg-gray-200 rounded;
+}
+
+/* Focus styles for accessibility */
+.skill-card:focus-visible {
+  @apply outline-none ring-2 ring-primary-500 ring-offset-2;
+}
+
+.skill-card-action-button:focus-visible {
+  @apply outline-none ring-2 ring-primary-500 ring-offset-1;
+}
+
+/* Dark mode support (if needed in future) */
+@media (prefers-color-scheme: dark) {
+  .skill-card {
+    @apply bg-gray-800 border-gray-700 text-gray-100;
+  }
+
+  .skill-card-tag {
+    @apply bg-gray-700 text-gray-300;
+  }
+
+  .skill-card-action-button:hover {
+    @apply bg-gray-700;
+  }
+}
+
+/* Print styles */
+@media print {
+  .skill-card {
+    @apply shadow-none border border-gray-300;
+  }
+
+  .skill-card-action-button {
+    display: none !important;
+  }
+}

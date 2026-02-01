@@ -1,0 +1,245 @@
+/* Delete Skill Modal Styles */
+
+.delete-skill-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.delete-skill-modal__header {
+  text-align: center;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-border-primary);
+}
+
+.delete-skill-modal__header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-error);
+}
+
+.delete-skill-modal__content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.delete-skill-modal__skill-info {
+  text-align: center;
+  padding: 20px;
+  background: var(--color-bg-secondary);
+  border-radius: 8px;
+  border: 1px solid var(--color-border-primary);
+}
+
+.delete-skill-modal__skill-info h3 {
+  margin: 0 0 8px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.delete-skill-modal__description {
+  margin: 0 0 16px 0;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+.delete-skill-modal__meta {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.delete-skill-modal__platform,
+.delete-skill-modal__files {
+  padding: 4px 8px;
+  background: var(--color-bg-tertiary);
+  border-radius: 4px;
+}
+
+.delete-skill-modal__warning {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  background: var(--color-error-bg);
+  border: 1px solid var(--color-error-border);
+  border-radius: 8px;
+}
+
+.delete-skill-modal__warning-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.delete-skill-modal__warning-text {
+  flex: 1;
+}
+
+.delete-skill-modal__warning-text h4 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-error);
+}
+
+.delete-skill-modal__warning-text p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-text-primary);
+  line-height: 1.5;
+}
+
+.delete-skill-modal__confirmation {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.delete-skill-modal__label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.delete-skill-modal__required {
+  display: inline-block;
+  padding: 2px 6px;
+  background: var(--color-error);
+  color: white;
+  border-radius: 4px;
+  font-family: monospace;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.delete-skill-modal__input {
+  padding: 12px 16px;
+  border: 2px solid var(--color-border-primary);
+  border-radius: 6px;
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-size: 16px;
+  font-family: monospace;
+  transition: border-color 0.2s;
+}
+
+.delete-skill-modal__input:focus {
+  outline: none;
+  border-color: var(--color-error);
+}
+
+.delete-skill-modal__input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.delete-skill-modal__timer {
+  text-align: center;
+  padding: 8px 12px;
+  background: var(--color-bg-tertiary);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.delete-skill-modal__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border-primary);
+}
+
+.delete-skill-modal__undo {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
+  animation: slideIn 0.3s ease-out;
+}
+
+.delete-skill-modal__undo-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 24px;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.delete-skill-modal__undo-content span {
+  font-size: 14px;
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .delete-skill-modal {
+    gap: 16px;
+  }
+
+  .delete-skill-modal__header h2 {
+    font-size: 20px;
+  }
+
+  .delete-skill-modal__skill-info h3 {
+    font-size: 18px;
+  }
+
+  .delete-skill-modal__warning {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .delete-skill-modal__footer {
+    flex-direction: column-reverse;
+  }
+
+  .delete-skill-modal__footer button {
+    width: 100%;
+  }
+
+  .delete-skill-modal__undo {
+    left: 24px;
+    right: 24px;
+  }
+
+  .delete-skill-modal__undo-content {
+    justify-content: space-between;
+  }
+}
+
+/* Animation for step transitions */
+.delete-skill-modal > * {
+  animation: fadeIn 0.2s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

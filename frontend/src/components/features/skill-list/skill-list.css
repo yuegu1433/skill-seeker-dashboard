@@ -1,0 +1,176 @@
+/* SkillList Component Styles */
+
+.skill-list {
+  @apply w-full;
+}
+
+.skill-list-controls {
+  @apply bg-white p-4 rounded-lg border border-gray-200 shadow-sm;
+}
+
+.skill-list-header {
+  @apply flex items-center justify-between;
+}
+
+.skill-list-content {
+  @apply relative;
+}
+
+/* Loading State */
+.skill-list .spinner {
+  @apply inline-block animate-spin rounded-full border-4 border-solid border-primary-200 border-r-primary-600 motion-reduce:animate-[spin_1.5s_linear_infinite];
+}
+
+/* Empty State */
+.skill-list-empty {
+  @apply flex flex-col items-center justify-center py-12 text-gray-500;
+}
+
+.skill-list-empty-icon {
+  @apply w-16 h-16 mb-4 text-gray-300;
+}
+
+/* Virtual Scroll Container */
+.skill-list .ReactVirtualized__List {
+  @apply outline-none;
+}
+
+.skill-list .ReactVirtualized__Grid {
+  @apply outline-none;
+}
+
+/* AutoSizer Container */
+.skill-list .react-virtualized-auto-sizer {
+  @apply min-h-0;
+}
+
+/* Search Input Enhancements */
+.skill-list-controls .search-input-wrapper {
+  @apply relative;
+}
+
+/* Filter Panel Enhancements */
+.filter-panel {
+  @apply bg-gray-50 rounded-md p-4;
+}
+
+.filter-panel .filter-section {
+  @apply space-y-2;
+}
+
+/* Sort Controls Enhancements */
+.sort-controls {
+  @apply whitespace-nowrap;
+}
+
+/* View Toggle Enhancements */
+.view-toggle {
+  @apply bg-white;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 640px) {
+  .skill-list-controls {
+    @apply px-3 py-2;
+  }
+
+  .skill-list-controls .flex {
+    @apply flex-col space-y-3;
+  }
+
+  .skill-list-controls .flex-1 {
+    @apply w-full;
+  }
+
+  .skill-list-controls .flex items-center.space-x-3 {
+    @apply space-x-2;
+  }
+
+  .view-toggle span {
+    @apply hidden;
+  }
+}
+
+@media (max-width: 768px) {
+  .skill-list-content .grid {
+    @apply grid-cols-1;
+  }
+}
+
+@media (min-width: 768px) {
+  .skill-list-content .grid {
+    @apply grid-cols-2;
+  }
+}
+
+@media (min-width: 1024px) {
+  .skill-list-content .grid {
+    @apply grid-cols-3;
+  }
+}
+
+@media (min-width: 1280px) {
+  .skill-list-content .grid {
+    @apply grid-cols-4;
+  }
+}
+
+/* Grid View Specific Styles */
+.skill-list-grid {
+  @apply grid gap-4;
+}
+
+/* List View Specific Styles */
+.skill-list-list {
+  @apply space-y-4;
+}
+
+/* Animation Classes */
+.skill-list-enter {
+  @apply opacity-0 transform scale-95;
+}
+
+.skill-list-enter-active {
+  @apply opacity-100 transform scale-100 transition-all duration-200 ease-out;
+}
+
+.skill-list-exit {
+  @apply opacity-100 transform scale-100;
+}
+
+.skill-list-exit-active {
+  @apply opacity-0 transform scale-95 transition-all duration-150 ease-in;
+}
+
+/* Focus Management */
+.skill-list [tabindex="-1"]:focus {
+  @apply outline-none;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .skill-list-controls {
+    @apply border-2 border-gray-900;
+  }
+
+  .filter-panel {
+    @apply border border-gray-900;
+  }
+
+  .sort-controls select,
+  .view-toggle button {
+    @apply border-2 border-gray-900;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .skill-list .spinner {
+    @apply animate-none;
+  }
+
+  .skill-list-enter-active,
+  .skill-list-exit-active {
+    @apply transition-none;
+  }
+}
