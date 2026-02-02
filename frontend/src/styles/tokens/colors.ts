@@ -200,8 +200,8 @@ export const TEXT_COLORS = {
   inverse: '#ffffff',
   onColor: '#ffffff',
   placeholder: '#a1a1aa',
-  link: PLATFORM_COLORS.primary[500],
-  linkHover: PLATFORM_COLORS.primary[600],
+  link: SEMANTIC_COLORS.primary[500],
+  linkHover: SEMANTIC_COLORS.primary[600],
 } as const;
 
 /**
